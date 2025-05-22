@@ -80,6 +80,31 @@ In essence, building cloud-native applications is a strategy that promotes agili
 
 With a clear understanding of these characteristics and key pillars, organisations can fully exploit the advantages of cloud-native architectures.
 
+## Autoscaling:
+
+Autoscaling is a fundamental feature of cloud-native architecture that enables applications to automatically adjust their computing resources based on demand. Here's a clear breakdown of what it is, why it matters, and how it works in a cloud-native context:
+
+**What is Autoscaling in Cloud-Native Architecture?**
+
+Autoscaling refers to the automatic adjustment of resources—like virtual machines, containers, or pods—based on metrics such as CPU usage, memory consumption, queue length, or custom business metrics.
+
+**Why Autoscaling Is Important**
+
+**Improves Performance:** Ensures your application can handle spikes in traffic or workload.
+**Reduces Cost:** Scales down resources during low demand, reducing operational costs.
+**Enhances Resilience:** Maintains availability and responsiveness during failures or high loads.
+**Supports Elasticity:** Key to cloud-native elasticity, where apps are dynamically responsive to demand.
+
+### **Kubernetes Autoscaling Options:**
+----
+![image](https://github.com/user-attachments/assets/9430190c-7a56-4008-8913-2335639b5270)
+
+
+
+
+
+
+
 # Cloud Native Observability
 * Telemetry & Observability
 * Prometheus
