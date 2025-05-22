@@ -20,22 +20,22 @@ KCNA - latest curriculum you can find here: [KCNA](https://github.com/cncf/curri
  * Scheduling
 
 # Container Orchestration
-* Container Orchestration Fundamentals
-* Runtime
-* Security
-* Networking
-* Service Mesh
-* Storage
+1. Container Orchestration Fundamentals
+2. Runtime
+3. Security
+4. Networking
+5. Service Mesh
+6. Storage
 
 # Cloud Native Architecture
-* Cloud Native Architecture Fundamentals
-* Autoscaling
-* Serverless
-* Community & Governance
-* Personas
-* Open Standards
+1. Cloud Native Architecture Fundamentals
+2. Autoscaling
+3. Serverless
+4. Community & Governance
+5. Personas
+6. Open Standards
 
-## Cloud Native Architecture Fundamentals
+## 1. Cloud Native Architecture Fundamentals
 **Characteristics of Cloud Native Applications:**
 
 Cloud Native Applications harness the power of the cloud to provide increased resilience, agility, operability, and observability. Let's dive a bit deeper into these characteristics.
@@ -80,7 +80,9 @@ In essence, building cloud-native applications is a strategy that promotes agili
 
 With a clear understanding of these characteristics and key pillars, organisations can fully exploit the advantages of cloud-native architectures.
 
-## Autoscaling:
+---
+
+## 2. Autoscaling:
 
 Autoscaling is a fundamental feature of cloud-native architecture that enables applications to automatically adjust their computing resources based on demand. Here's a clear breakdown of what it is, why it matters, and how it works in a cloud-native context:
 
@@ -95,11 +97,13 @@ Autoscaling refers to the automatic adjustment of resources—like virtual machi
 **Enhances Resilience:** Maintains availability and responsiveness during failures or high loads.
 **Supports Elasticity:** Key to cloud-native elasticity, where apps are dynamically responsive to demand.
 
-### **Kubernetes Autoscaling Options:**
-----
+### Kubernetes Autoscaling Options:
+
 ![image](https://github.com/user-attachments/assets/9430190c-7a56-4008-8913-2335639b5270)
 
-## Serverless
+---
+
+## 3. Serverless
 Serverless is a modern cloud computing model that perfectly fits within cloud-native architecture. It allows developers to build and run applications without managing servers, letting cloud providers handle infrastructure, scaling, and availability.
 
 ### ✅ What is Serverless?
@@ -154,30 +158,30 @@ Kubernetes is designed for container orchestration, but it can be extended to su
 |Fission	|Fast serverless functions for Kubernetes, focused on developer speed and performance.|
 |KEDA	|Kubernetes-based Event-Driven Autoscaler, often used with Knative or custom workloads for event-driven scaling.|
 
-### ✅ 1. Knative (Most Popular & Cloud-Native)
+### ✅ i. Knative (Most Popular & Cloud-Native)
 * Developed by Google, maintained by the CNCF
 * Key components:
    - Knative Serving – deploy and autoscale containers (including functions)
    - Knative Eventing – bind event sources to functions
 * Supports scale-to-zero and integrates with Istio or Kourier for networking
 
-### ✅ 2. OpenFaaS
+### ✅ ii. OpenFaaS
 * Simpler, Docker-focused approach to FaaS on Kubernetes
 * CLI and UI for deploying functions
 * Supports REST, cron jobs, queues
 * Easy to get started with faas-cli
 
-### ✅ 3. Fission
+### ✅ iii. Fission
 * High performance, low-latency functions
 * Hot reload, pre-warmed containers
 * Supports multiple languages out of the box
 
-### ✅ 4. Kubeless (Now mostly inactive)
+### ✅ iv. Kubeless (Now mostly inactive)
 * Kubernetes-native FaaS framework using CRDs
 * Supports multiple runtimes (Python, Node.js, etc.)
 * Not actively developed — consider Knative or OpenFaaS instead
 
-### ✅ 5. KEDA (Kubernetes-based Event-Driven Autoscaler)
+### ✅ v. KEDA (Kubernetes-based Event-Driven Autoscaler)
 * Works with any Kubernetes deployment (not just functions)
 * Event-driven autoscaling for queues, Kafka, Prometheus, etc.
 * Often used with Knative or Azure Functions on Kubernetes
@@ -195,6 +199,85 @@ Use Kubernetes serverless when:
 |Simple, DIY serverless	|OpenFaaS|
 |Low-latency function execution	|Fission|
 
+## 4. 🌍 Community and Governance of Cloud-Native
+
+The cloud-native ecosystem is driven by a vibrant open-source community and structured governance to ensure collaboration, innovation, and interoperability. At the center of this ecosystem is the Cloud Native Computing Foundation (CNCF) — the primary organization overseeing the development and direction of cloud-native technologies.
+
+### 🏛️ 1. Cloud Native Computing Foundation (CNCF)
+#### ✅ What is CNCF?
+The CNCF is a vendor-neutral, open-source foundation under the Linux Foundation that promotes the adoption of cloud-native computing. It hosts and governs many of the most critical cloud-native projects.
+
+#### 🔑 CNCF’s Mission:
+```**“Make cloud-native computing ubiquitous.”**```
+##### 🔍 What This Means
+The CNCF works to:
+* Support and sustain open-source projects that enable cloud-native development.
+* Foster collaboration between developers, vendors, and end users.
+* Define standards and best practices for modern, scalable, and resilient cloud-native systems.
+* Educate and promote adoption of technologies like containers, microservices, orchestration, and observability tools.
+
+#### CNCF Maintains Projects Like:
+|Project	|Description|
+|:----|:-----|
+|Kubernetes|	Container orchestration|
+|Prometheus|	Monitoring and alerting|
+|Envoy|	High-performance service proxy|
+|gRPC|	High-performance RPC framework|
+|Helm|	Kubernetes package manager|
+|OpenTelemetry|	Observability and tracing|
+
+### 🧩 2. Governance Model
+CNCF’s governance ensures transparency and community involvement. It includes:
+
+|Governance Body|	Role|
+|:-------|:----------|
+|TOC (Technical Oversight Committee)|	Guides technical vision, accepts or retires projects.|
+|Governing Board	|Business and strategic direction, financial oversight.|
+|End User Community|	Large-scale adopters (e.g., Apple, Spotify, Intuit) provide feedback and shape priorities.|
+|SIGs (Special Interest Groups)|	Focused on specific areas like observability, storage, security.|
+|Working Groups	|Solve cross-project or community-wide challenges.|
+
+```✅ All meetings, proposals, and votes are public and transparent, often on GitHub or in public Zoom calls.``` 
+
+### 🌐 3. Community Involvement
+|Channel	|How the Community Engages|
+|:-----|:----|
+|GitHub	|Open-source contributions to CNCF projects.|
+|Slack (CNCF workspace)	|Discussions, Q&A, collaboration.|
+|CNCF Events (e.g., KubeCon)|	Global and regional conferences.|
+|Mentorship Programs|	Google Summer of Code, LFX Mentorship.|
+|Technical Blogs & Docs	|Created and maintained by community members.|
+
+```🔗 Join CNCF Slack: https://slack.cncf.io/```
+
+### 💼 4. Membership Tiers
+The CNCF ecosystem includes:
+* End Users (e.g., Box, Spotify, JPMorgan)
+* Vendors (e.g., AWS, Microsoft, Google, Red Hat)
+* Startups and Academia
+  
+These members help fund the CNCF, contribute engineering resources, and drive adoption of standards and best practices.
+
+
+### 📈 5. Maturity Model for Projects
+CNCF classifies projects into:
+
+|Level|	Description|
+|:----|:-----|
+|Sandbox	|Early-stage, experimental projects.|
+|Incubating	|Growing adoption and governance maturity.|
+|Graduated	|Widely adopted, production-ready, and stable.|
+
+Graduated projects include Kubernetes, Prometheus, Envoy, Helm, etc.
+
+|Various graphs that shows the maturity levels| |
+|----|---|
+|![image](https://github.com/user-attachments/assets/71533d1c-3fb3-424b-9efb-17cfdf747e90)|![image](https://github.com/user-attachments/assets/5f3964b5-9eb0-4cde-9553-bf36332de5de)|
+
+
+
+
+----
 # Cloud Native Observability
 * Telemetry & Observability
 * Prometheus
