@@ -131,6 +131,69 @@ Serverless is one of the pillars of cloud-native development, alongside:
 
 🔧 Operational efficiency
 
+###  Serverless Components in Cloud Platforms
+
+|Cloud Provider	|Serverless Offering|
+|:----------------|:--------------------|
+|AWS	|AWS Lambda, API Gateway, DynamoDB|
+|Azure|	Azure Functions, Logic Apps|
+|Google| Cloud	Cloud Functions, Cloud Run|
+|IBM Cloud|	IBM Cloud Functions (OpenWhisk)|
+
+![image](https://github.com/user-attachments/assets/2762e7b6-0933-476b-b16f-1b33d947b29e)
+
+Kubernetes is designed for container orchestration, but it can be extended to support serverless architectures through various open-source frameworks and tools. These solutions allow you to run functions-as-a-service (FaaS) on top of Kubernetes, blending the scalability of Kubernetes with the developer productivity of serverless.
+
+### 🔧 Top Kubernetes Serverless Solutions:
+
+|Framework	|Description|
+|:-------|:-----|
+|Knative	|Google-led project that brings serverless to Kubernetes with support for autoscaling, eventing, and HTTP-based function invocation.|
+|Kubeless	|Lightweight FaaS framework built on top of Kubernetes Custom Resource Definitions (CRDs).|
+|OpenFaaS	|Function-as-a-Service on Kubernetes with easy deployment and built-in monitoring.|
+|Fission	|Fast serverless functions for Kubernetes, focused on developer speed and performance.|
+|KEDA	|Kubernetes-based Event-Driven Autoscaler, often used with Knative or custom workloads for event-driven scaling.|
+
+### ✅ 1. Knative (Most Popular & Cloud-Native)
+* Developed by Google, maintained by the CNCF
+* Key components:
+   - Knative Serving – deploy and autoscale containers (including functions)
+   - Knative Eventing – bind event sources to functions
+* Supports scale-to-zero and integrates with Istio or Kourier for networking
+
+### ✅ 2. OpenFaaS
+* Simpler, Docker-focused approach to FaaS on Kubernetes
+* CLI and UI for deploying functions
+* Supports REST, cron jobs, queues
+* Easy to get started with faas-cli
+
+### ✅ 3. Fission
+* High performance, low-latency functions
+* Hot reload, pre-warmed containers
+* Supports multiple languages out of the box
+
+### ✅ 4. Kubeless (Now mostly inactive)
+* Kubernetes-native FaaS framework using CRDs
+* Supports multiple runtimes (Python, Node.js, etc.)
+* Not actively developed — consider Knative or OpenFaaS instead
+
+### ✅ 5. KEDA (Kubernetes-based Event-Driven Autoscaler)
+* Works with any Kubernetes deployment (not just functions)
+* Event-driven autoscaling for queues, Kafka, Prometheus, etc.
+* Often used with Knative or Azure Functions on Kubernetes
+
+### 🚀 When to Use Serverless on Kubernetes
+Use Kubernetes serverless when:
+- You already have a Kubernetes platform (e.g., EKS, GKE, AKS).
+- You want more control than public FaaS (e.g., AWS Lambda) offers.
+- You need to run event-driven apps alongside microservices.
+
+### 🛠️ Recommendation
+|Use Case	|Best Solution|
+|:---|:----|
+|Enterprise-ready, event-driven apps	|Knative + KEDA|
+|Simple, DIY serverless	|OpenFaaS|
+|Low-latency function execution	|Fission|
 
 # Cloud Native Observability
 * Telemetry & Observability
