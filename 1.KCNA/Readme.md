@@ -5,7 +5,7 @@ KCNA - latest curriculum you can find here: [KCNA](https://github.com/cncf/curri
  # Important Sections and Exam Coverage:
 
  | Section                                       |   Percentage |
- |-----------------------------------------------|--------------|
+ |:-----------------------------------------------|--------------|
  |Kubernetes Fundamentals                        |       46     |
  |Container Orchestration                        |       22     |
  |Cloud Native Architecture                      |       16     |
@@ -99,10 +99,37 @@ Autoscaling refers to the automatic adjustment of resources—like virtual machi
 ----
 ![image](https://github.com/user-attachments/assets/9430190c-7a56-4008-8913-2335639b5270)
 
+## Serverless
+Serverless is a modern cloud computing model that perfectly fits within cloud-native architecture. It allows developers to build and run applications without managing servers, letting cloud providers handle infrastructure, scaling, and availability.
 
+### ✅ What is Serverless?
+In a serverless architecture, you write functions or services, and the cloud provider runs them on-demand. You are charged only for execution time, not idle time.
 
+### 🧱 Core Characteristics of Serverless in Cloud-Native Systems:
 
+|Feature  |Description|
+|:---------|:------------|
+|Event-driven|Functions are triggered by events (e.g., HTTP requests, database changes, message queues).|
+|Auto-scaling|Instantly scales up/down based on demand, without manual intervention.|
+|Pay-per-use|You’re billed only for function execution time and resources used.|
+|Stateless|Functions are typically stateless; state is managed via databases or external storage.|
+|Managed infrastructure|Developers focus on code; the provider handles servers, patching, scaling, etc.|
 
+### 🧩 Where Serverless Fits in Cloud-Native Architecture:
+Serverless is one of the pillars of cloud-native development, alongside:
+
+* Microservices
+* Containers
+* DevOps & CI/CD
+* APIs
+
+#### It promotes:
+
+🏗️ Modular applications (functions for each task)
+
+🚀 Rapid development and deployment
+
+🔧 Operational efficiency
 
 
 # Cloud Native Observability
