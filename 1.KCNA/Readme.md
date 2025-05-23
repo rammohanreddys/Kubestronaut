@@ -275,7 +275,7 @@ CNCF classifies projects into:
 Graduated projects include Kubernetes, Prometheus, Envoy, Helm, etc.
 
 ## 5. Personas:
-|DevOps | Roles| |
+|DevOps | Roles| Life Cycle|
 |-----|-----|---|
 |![image](https://github.com/user-attachments/assets/f2028904-b471-43d1-8263-7c81e51fa10d)|![image](https://github.com/user-attachments/assets/ccb2d818-5ee5-444e-8e3a-3ccb2a15276b)|![image](https://github.com/user-attachments/assets/4f9d641a-b83a-4d35-99b8-a55e2fb4b98d)|
 
