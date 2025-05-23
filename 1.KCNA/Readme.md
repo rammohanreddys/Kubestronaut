@@ -260,8 +260,12 @@ These members help fund the CNCF, contribute engineering resources, and drive ad
 
 
 ### 📈 5. Maturity Model for Projects
-CNCF classifies projects into:
 
+|Various graphs that shows the maturity levels| |
+|----|---|
+|![image](https://github.com/user-attachments/assets/71533d1c-3fb3-424b-9efb-17cfdf747e90)|![image](https://github.com/user-attachments/assets/5f3964b5-9eb0-4cde-9553-bf36332de5de)|
+
+CNCF classifies projects into:
 |Level|	Description|
 |:----|:-----|
 |Sandbox	|Early-stage, experimental projects.|
@@ -270,9 +274,12 @@ CNCF classifies projects into:
 
 Graduated projects include Kubernetes, Prometheus, Envoy, Helm, etc.
 
-|Various graphs that shows the maturity levels| |
-|----|---|
-|![image](https://github.com/user-attachments/assets/71533d1c-3fb3-424b-9efb-17cfdf747e90)|![image](https://github.com/user-attachments/assets/5f3964b5-9eb0-4cde-9553-bf36332de5de)|
+## 5. Personas:
+|DevOps | Roles| |
+|-----|-----|---|
+|![image](https://github.com/user-attachments/assets/f2028904-b471-43d1-8263-7c81e51fa10d)|![image](https://github.com/user-attachments/assets/ccb2d818-5ee5-444e-8e3a-3ccb2a15276b)|![image](https://github.com/user-attachments/assets/4f9d641a-b83a-4d35-99b8-a55e2fb4b98d)|
+
+
 
 
 
