@@ -275,9 +275,58 @@ CNCF classifies projects into:
 Graduated projects include Kubernetes, Prometheus, Envoy, Helm, etc.
 
 ## 5. Personas:
+
+In the context of the Cloud Native Computing Foundation (CNCF), the term "**personas**" refers to the various roles and stakeholders involved in the development, deployment, and operation of cloud-native applications. These personas help in understanding the responsibilities, challenges, and perspectives of different individuals or groups within the cloud-native ecosystem.
+
+![image](https://github.com/user-attachments/assets/b52a659e-db2f-4bf1-a543-0b3251d9b389)
+
+### Key Personas in Cloud-Native Computing:
+
+||Role|Responsibilities|Example| 
+|:--|:--|:--|:--|
+|**Infrastructure Operator**|Manages the physical and virtual infrastructure, including hardware, firmware, and cloud resources|- Ensures the availability and reliability of the underlying infrastructure. <br> - Applies firmware updates and manages hardware configurations. <br> - Oversees the provisioning of compute, storage, and networking resources.| Cloud Service Providers (CSPs), Site Reliability Engineers (SREs).|
+|**Orchestration Operator**|Handles the deployment and management of workloads within orchestration platforms like Kubernetes.| - Deploys and manages containerized applications. <br> - Monitors and scales workloads based on demand. <br> - Manages cluster resources and services.|Kubernetes Administrators, DevOps Engineers.|
+|**Container Image Provider**|Develops and distributes container images used in cloud-native applications.|- Builds and maintains container images. <br> - Signs and secures images to ensure integrity. <br> - Provides mechanisms for verifying image authenticity.|Software Vendors, Independent Developers.|
+|**Data Owner**|Owns and governs the data utilized by cloud-native applications.|- Ensures data privacy and compliance with regulations. <br> - Monitors data access and usage. <br> - Collaborates with other personas to secure data.|Compliance Officers, Data Stewards.|
+|**Application Developer**|Designs and develops applications tailored for cloud-native environments.|- Writes microservices and APIs. <br> - Integrates with cloud-native services and platforms. <br> - Ensures applications are scalable and resilient.|Software Engineers, Full-Stack Developers.|
+|**Security Specialist**|Focuses on securing cloud-native applications and infrastructure.|- Identifies and mitigates security vulnerabilities. <br> - Implements security best practices and policies. <br> - Conducts audits and compliance checks.|Security Engineers, Cloud Security Architects.|
+
+#### Importance of Personas
+Understanding these personas is crucial for several reasons:
+
+* **Tailored Solutions:** Designing tools and platforms that cater to the specific needs and challenges of each persona.
+* **Effective Communication:** Facilitating better collaboration and communication among different stakeholders.
+* **Security and Compliance:** Ensuring that all roles are aware of and adhere to security and compliance requirements.
+* **Optimized Operations:** Streamlining processes and workflows by aligning them with the responsibilities of each persona.
+
 |DevOps | Roles| Life Cycle|
 |-----|-----|---|
 |![image](https://github.com/user-attachments/assets/f2028904-b471-43d1-8263-7c81e51fa10d)|![image](https://github.com/user-attachments/assets/ccb2d818-5ee5-444e-8e3a-3ccb2a15276b)|![image](https://github.com/user-attachments/assets/4f9d641a-b83a-4d35-99b8-a55e2fb4b98d)|
+
+|SRE| Roles|Special Focus|
+|--|--|--|
+|![image](https://github.com/user-attachments/assets/da95e899-14cf-4351-988c-bf35ba2e7a2a)|![image](https://github.com/user-attachments/assets/a6d8ce1e-32bf-45ab-81f2-4a707cc7ab98)|![image](https://github.com/user-attachments/assets/2f77acea-726b-4137-87e4-a1bbdbf23e1a)|
+
+|CloudOps Engineer Skill Set & Roles|Security Engineer & Roles|DevSecOps Engineer|
+|--|--|--|
+|![image](https://github.com/user-attachments/assets/c9e2ebe2-80ce-42f1-8cc3-e697bbb545b0)|![image](https://github.com/user-attachments/assets/cbf8d821-c393-403d-927f-69712fd80485)|![image](https://github.com/user-attachments/assets/cff9f890-ec16-4897-b453-1d6634d77234)|
+
+|Full Stack Developer & Roles|Cloud Architect & Roles |Data Engineer & Roles|
+|---|---|---|
+|![image](https://github.com/user-attachments/assets/ac286904-edb8-4705-88dd-66e098107d23)|![image](https://github.com/user-attachments/assets/37800e51-945a-4f4d-a4c2-7d13997c9182)|![image](https://github.com/user-attachments/assets/b21eca20-41c6-439f-b2ad-260e50e4be47)|
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
