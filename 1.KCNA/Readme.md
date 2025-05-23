@@ -82,7 +82,7 @@ With a clear understanding of these characteristics and key pillars, organisatio
 
 ---
 
-## 2. Autoscaling:
+## 2. Autoscaling in Cloud Native Architecture:
 
 Autoscaling is a fundamental feature of cloud-native architecture that enables applications to automatically adjust their computing resources based on demand. Here's a clear breakdown of what it is, why it matters, and how it works in a cloud-native context:
 
@@ -103,7 +103,7 @@ Autoscaling refers to the automatic adjustment of resources—like virtual machi
 
 ---
 
-## 3. Serverless
+## 3. Serverless in Cloud Native Architecture:
 Serverless is a modern cloud computing model that perfectly fits within cloud-native architecture. It allows developers to build and run applications without managing servers, letting cloud providers handle infrastructure, scaling, and availability.
 
 ### ✅ What is Serverless?
@@ -199,7 +199,7 @@ Use Kubernetes serverless when:
 |Simple, DIY serverless	|OpenFaaS|
 |Low-latency function execution	|Fission|
 
-## 4. 🌍 Community and Governance of Cloud-Native
+## 4. 🌍 Community and Governance of Cloud-Native:
 
 The cloud-native ecosystem is driven by a vibrant open-source community and structured governance to ensure collaboration, innovation, and interoperability. At the center of this ecosystem is the Cloud Native Computing Foundation (CNCF) — the primary organization overseeing the development and direction of cloud-native technologies.
 
@@ -274,7 +274,7 @@ CNCF classifies projects into:
 
 Graduated projects include Kubernetes, Prometheus, Envoy, Helm, etc.
 
-## 5. Personas:
+## 5. Personas in Cloud Native Architecture:
 
 In the context of the Cloud Native Computing Foundation (CNCF), the term "**personas**" refers to the various roles and stakeholders involved in the development, deployment, and operation of cloud-native applications. These personas help in understanding the responsibilities, challenges, and perspectives of different individuals or groups within the cloud-native ecosystem.
 
@@ -314,6 +314,29 @@ Understanding these personas is crucial for several reasons:
 |Full Stack Developer & Roles|Cloud Architect & Roles |Data Engineer & Roles|
 |---|---|---|
 |![image](https://github.com/user-attachments/assets/ac286904-edb8-4705-88dd-66e098107d23)|![image](https://github.com/user-attachments/assets/37800e51-945a-4f4d-a4c2-7d13997c9182)|![image](https://github.com/user-attachments/assets/b21eca20-41c6-439f-b2ad-260e50e4be47)|
+---
+
+## 6. Open Standards in Cloud Native Architecture:
+
+* Open standards are fundamental to cloud-native architecture, serving as publicly accessible and universally agreed-upon guidelines or protocols. They promote interoperability, portability, and flexibility across diverse cloud service providers and platforms, addressing the inherent complexity and distributed nature of cloud-native environments.
+* Open standards play a crucial role in cloud native architecture by promoting interoperability, portability, security, and innovation. These standards ensure that cloud-native technologies—designed for dynamic, scalable, and distributed environments—can work together seamlessly across different vendors, tools, and platforms.
+
+#### Why Open Standards Matter in Cloud-Native Architecture:
+
+* **Interoperability:** Open standards ensure that different cloud platforms, services, and tools can communicate and work together seamlessly. This is crucial for hybrid and multi-cloud environments, allowing organizations to integrate various solutions without compatibility issues.
+* **Portability:** By adhering to open standards, applications, workloads, and data can be moved between cloud providers with minimal friction. This significantly reduces the risk of vendor lock-in, giving organizations the freedom to choose the best-in-class services and optimize costs.
+* **Innovation and Collaboration:** Open standards encourage community contributions and rapid development. When a common set of standards is established, developers and organizations can collaborate on new projects and advancements, accelerating innovation across the cloud-native ecosystem.
+
+|Open Containers Initiative (OCI)| Container Network Interface (CNI)|
+|---|---|
+|![image](https://github.com/user-attachments/assets/ad6ff993-1713-4eb5-81f0-aa16bf6f0a03)|![image](https://github.com/user-attachments/assets/3097baf0-d969-45ee-a6ad-9902dacc6f79)|
+
+|Container Storage Interface (CSI)|Container Runtime INterface (CRI)|Container Mesh Interface(CMI)|
+|---|---|---|
+![image](https://github.com/user-attachments/assets/992b24a5-70c7-40f9-a58a-21e80b9b4fbc)|![image](https://github.com/user-attachments/assets/14b36d1e-b0c5-474a-994f-bce0936b6cf9)|![image](https://github.com/user-attachments/assets/5fbacbc7-68d9-427a-a1b1-4b1e6424c896)|
+
+
+
 
 
 
