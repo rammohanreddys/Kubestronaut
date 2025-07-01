@@ -3,7 +3,7 @@
 ## Core Categories of Kubernetes Resources
 
 | Category                | Description                                   | Examples                                                                           |
-| ----------------------- | --------------------------------------------- | -----------------------------------------------------------------------------------|
+|:----------------------- |:--------------------------------------------- |:-----------------------------------------------------------------------------------|
 | **Workload**            | Define how applications run                   | Pod, Replicaset, Deployment, Daemonset, StatefulSet, Job, CronJob                  |
 | **Service & Discovery** | Expose and load balance applications          | Service, ClusterIP, NodePort, LoadBalancer, ExternalName, Ingress, Endpoint        |
 | **Configuration**       | Store and inject configuration into workloads | ConfigMap, Secret                                                                  |
