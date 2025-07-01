@@ -73,3 +73,26 @@ These channels are here to enhance your experience and foster a vibrant learning
 We have created a repository with notes, links to documentation and answers to practice questions here. Please make sure to go through these as you progress through the course:
 
 https://github.com/kodekloudhub/certified-kubernetes-administrator-course
+
+### Notes available at KodeKloud Notes
+
+About KodeKloud Notes
+
+KodeKloud Notes provides detailed documentation and learning materials for our courses. Each course section is carefully organized to help you:
+
+* Follow along with course lectures
+* Review key concepts and commands
+* Prepare for certification exams
+* Reference materials during your learning journey
+
+**How to Use**
+
+1. Access KodeKloud Notes here - https://notes.kodekloud.com/
+
+**Features**
+
+* **Comprehensive Documentation:** Detailed notes covering all course topics
+* **Easy Navigation:** Well-organized content structure with intuitive navigation
+* **Search Functionality:** Quickly find the content you need
+* **Dark/Light Mode:** Choose your preferred reading experience
+* **Mobile Friendly:** Access your learning materials on any device
