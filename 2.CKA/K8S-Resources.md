@@ -165,7 +165,7 @@ spec:
     emptyDir: {}
 ```
 
-#### Kubectl commands for Pod:**
+##### Kubectl commands for Pod:**
 
 **Viewing Pods**
 
