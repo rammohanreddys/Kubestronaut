@@ -217,8 +217,59 @@ This creates a basic Pod YAML you can edit before applying with:
 ```
 kubectl apply -f nginx-pod.yaml
 ```
+#### 2. ReplicaSet:
 
+A ReplicaSet in Kubernetes ensures that a specified number of pod replicas are running at any given time. It is mostly used indirectly through Deployments, but understanding ReplicaSets is important for grasping how Kubernetes maintains pod availability.
 
+**Key Concepts:**
 
+  - **Ensures Availability:** Maintains the desired number of identical pod replicas.
+  - **Self-Healing:** If a pod fails or is deleted, the ReplicaSet creates a new one.
+  - **Selector-Based:** Uses labels to identify which pods it should manage.
 
+**Basic Example of a ReplicaSet:**
+
+```
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-replicaset
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: my-container
+        image: nginx
+```
+
+**How It Works:**
+
+  1. **Creation:** When the ReplicaSet is applied, it checks how many matching pods exist.
+  2. **Matching:** If fewer than desired, it creates more pods using the template.
+  3. **Monitoring:** Continuously watches for pod health and count.
+  4. **Reconciliation Loop:** Maintains the desired state (number of pods) even after failures.
+
+**Kubectl commands for Replicaset:**
+
+```
+kubectl get rs                                           ## List all ReplicaSets
+kubectl get rs -n <namespace>                            ## List all ReplicaSets in the specific namespace
+kubectl describe rs <replicaset-name>                    ## Describe a ReplicaSet (view detailed info)
+kubectl get rs <replicaset-name> -o yaml                 ## Get YAML/JSON definition of a ReplicaSet
+kubectl get rs <replicaset-name> -o json                 ## Get YAML/JSON definition of a ReplicaSet
+kubectl apply -f replicaset.yaml                         ## Create a ReplicaSet from YAML file
+kubectl edit rs <replicaset-name>                        ## Update the number of replicas
+kubectl scale rs <replicaset-name> --replicas=5          ## Update the number of replicas
+kubectl delete rs <replicaset-name>                      ## Delete a ReplicaSet
+kubectl get pods --selector=<label-key>=<label-value>    ## Check which pods are managed by a ReplicaSet
+```
+
+  
 
