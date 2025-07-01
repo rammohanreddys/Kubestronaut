@@ -333,7 +333,7 @@ Examples of scoring:
 
 ## Worker Components:
 
-### 4. Kubelet:
+### 1. Kubelet:
 
 The kubelet is an agent that runs on every worker node in a Kubernetes cluster. It is the primary node agent and is responsible for ensuring that containers are running in a Pod. It's the "worker bee" that takes instructions from the control plane and executes them on its assigned node.
 
@@ -366,3 +366,32 @@ The kubelet is an agent that runs on every worker node in a Kubernetes cluster. 
      for "static Pod" manifests. This is a common way to run the control plane components (like the kube-apiserver, etcd, kube-scheduler, and kube-controller-manager) as 
      Pods on the master nodes.
 
+### 2. Kube-proxy:
+
+Kube-proxy is a network proxy that runs on each node in the cluster. Responsible for maintaining network rules on nodes to allow communication to your Kubernetes Services.
+Implements service discovery and load balancing for TCP/UDP traffic across pods.
+
+**Key Functions:**
+
+| Function                     | Description                                                                |
+| ---------------------------- | -------------------------------------------------------------------------- |
+| **Service IP handling**      | Ensures traffic sent to a Service IP is routed to one of the backend pods. |
+| **Load balancing**           | Balances traffic across healthy pods backing a Service.                    |
+| **Network rules management** | Manages IP tables or IPVS rules for routing and forwarding packets.        |
+| **Supports multiple modes**  | Uses **iptables**, **ipvs**, or userspace proxying (older method).         |
+
+**How kube-proxy Works**
+
+1. Watches the Kubernetes API server for Service and Endpoint changes.
+2. Updates node network rules accordingly:
+   - For iptables mode: Creates iptables rules that redirect Service IP traffic to pods.
+   - For IPVS mode: Uses Linux IP Virtual Server (IPVS) for more efficient load balancing.
+3. When a client connects to a Service IP, kube-proxy routes that traffic to one of the Service’s backend pods.
+
+**Proxy Modes:**
+
+| Mode          | Description                           | Pros                        | Cons                           |
+| ------------- | ------------------------------------- | --------------------------- | ------------------------------ |
+| **iptables**  | Uses Linux iptables rules             | Efficient, widely supported | Rules can get complex at scale |
+| **IPVS**      | Uses Linux IP Virtual Server          | High performance, scalable  | Requires kernel modules        |
+| **Userspace** | Proxy runs in user space (deprecated) | Simple but slow             | Less efficient, deprecated     |
