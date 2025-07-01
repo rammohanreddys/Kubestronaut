@@ -20,8 +20,6 @@ Resources for this lecture available at documents folder
 
     ❑ Kubernetes Architecture
 
-    ❑ ETCD For Beginners
-
     ❑ ETCD in Kubernetes
 
     ❑ Kube-API Server
@@ -34,8 +32,155 @@ Resources for this lecture available at documents folder
 
     ❑ Kube Proxy
 
-#### Kubernetes Architecture:
+### Kubernetes Architecture:
+
+The Kubernetes cluster architecture is divided into two main segments:
 
 <p align="center">
   <img src="images/k8s-1.JPG" alt="Description of my awesome image" width="600">
 </p>
+
+|Component Category |Key Components|Description
+|-|-|-|
+|Master Node|etcd, Kube Scheduler, Controllers, Kube API Server|Centralized control and management of the entire cluster.|
+|Worker Node|Kubelet, Kube Proxy|Responsible for the lifecycle management of containers and ensuring network communication between services.|
+
+### Master Components:
+
+### 1. ETCD
+
+**What is etcd?**
+
+Etcd is an open-source, distributed key-value store that is the single source of truth for a Kubernetes cluster. It's designed to be reliable, consistent, and highly available, making it the perfect "brain" for a distributed system like Kubernetes. It stores all the configuration data, state data, and metadata for the entire cluster.
+
+etcd is a distributed key-value store used by Kubernetes (K8s) to store all its cluster data. It's a critical component of Kubernetes' control plane, as it holds the state of the entire cluster, including information about nodes, pods, ConfigMaps, Secrets, ServiceAccounts, roles, bindings, and more.
+
+**Why does Kubernetes use etcd?** or **What is etcd in Kubernetes?**
+
+* **Purpose:** Acts as the single source of truth for the Kubernetes cluster.
+* **Data stored:** Configuration data, cluster state, and metadata. (ex: Nodes, Pods, Replicas, Configmaps, Secrets, Resource Quotas, RBAC, Namespace definitions etc.)
+* **Architecture:** Based on the Raft consensus algorithm to ensure high availability and consistency across nodes.
+* **Watch Mechanism:** Etcd has a "watch" function that allows Kubernetes components to subscribe to changes in specific keys or directories. This is a core mechanism for 
+  how Kubernetes works.
+
+   For example, the kube-scheduler watches for new Pods to be scheduled, the kube-controller-manager watches for changes in objects, and the kubelet on each node watches for 
+   Pods assigned to it. When a change occurs in etcd, the watching components are notified and can take action.
+
+#### How does etcd work with Kubernetes components?
+
+The Kubernetes components interact with etcd through the API Server (kube-apiserver). The API Server is the only component that should directly read from and write to etcd. This design provides a centralized and secure access point, ensuring data consistency and integrity.
+
+
+#### **Here's a simplified flow of how it works:**
+
+**1. User action:** A user or an automated process submits a request to the Kubernetes API Server, for example, to create a new Deployment.
+
+**2. API Server interaction:** The API Server validates the request, serializes the object's definition (e.g., in Protobuf format), and stores it as a key-value pair in etcd.
+
+**3. Etcd stores data:** Etcd replicates this data across its cluster members, ensuring consistency.
+
+**4. Watchers are notified:** The API Server, through its watch mechanism, notifies other control plane components (like the scheduler and controllers) that a new Deployment has been created.
+
+**5. Controllers take action:** The kube-controller-manager and kube-scheduler now see the desired state stored in etcd and take the necessary actions to make the actual state match the desired state. For instance, the scheduler assigns the new Pods to a node, and the kubelet on that node sees the assignment and creates the Pods.
+
+**6. State updates:** As the state of the Pods and other resources changes (e.g., a Pod starts running), the kubelet and other components update the resource's status through the API Server, which then stores the updated information in etcd.
+
+### Install ETCD:
+
+```
+## Download Binaries: ##
+wget -q --https-only \
+"https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
+
+## Extract Binary
+tar xzvf etcd-v3.3.11-linux-amd64.tar.gz
+
+## Run ETCD Service
+./etcd
+```
+<p align="center">
+  <img src="images/k8s-4.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+```
+## Operate ETCD ##
+./etcd
+
+./etcdctl set key1 value1
+
+./etcdctl get key1
+```
+
+### Set Up Manual:
+```
+## Download Binaries: ##
+wget -q --https-only \
+"https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
+
+# Example etcd service configuration
+ExecStart=/usr/local/bin/etcd \
+  --name ${ETCD_NAME} \
+  --cert-file=/etc/etcd/kubernetes.pem \
+  --key-file=/etc/etcd/kubernetes-key.pem \
+  --peer-cert-file=/etc/etcd/kubernetes.pem \
+  --peer-key-file=/etc/etcd/kubernetes-key.pem \
+  --trusted-ca-file=/etc/etcd/ca.pem \
+  --peer-trusted-ca-file=/etc/etcd/ca.pem \
+  --peer-client-cert-auth \
+  --client-cert-auth \
+  --initial-advertise-peer-urls https://${INTERNAL_IP}:2380 \
+  --listen-peer-urls https://${INTERNAL_IP}:2380 \
+  --listen-client-urls https://${INTERNAL_IP}:2379,https://127.0.0.1:2379 \
+  --advertise-client-urls https://${INTERNAL_IP}:2379 \
+  --initial-cluster-token etcd-cluster-0 \
+  --initial-cluster controller-0=https://${CONTROLLER0_IP}:2380,controller-1=https://${CONTROLLER1_IP}:2380 \
+  --initial-cluster-state new \
+  --data-dir=/var/lib/etcd
+
+```
+
+<p align="center">
+  <img src="images/k8s-3.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+
+
+### 2. Kube API Server:
+
+The Kubernetes API server (kube-apiserver) is the central management component of Kubernetes. It exposes the Kubernetes API, which is used by all internal components and external clients (like kubectl, controllers, and other services) to communicate with the cluster.
+
+<p align="center">
+  <img src="images/k8s-2.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+* It is the entry point for all REST commands used to control the cluster.
+* Acts as a front-end to the Kubernetes control plane.
+* It is stateless—all cluster data is stored in etcd.
+
+**API-Server Responsibilities:**
+
+|Function|:Description|
+|-|-|
+|API Gateway|	Accepts REST API calls and processes them.|
+|Authentication|	Verifies the identity of the client.|
+|Authorization|	Checks whether the client is allowed to perform the requested action.|
+|Admission Control|	Intercepts requests to validate or mutate objects before persistence.|
+|Validates and Processes|	Validates object specs (e.g., pod specs) and sets default values.|
+|Persistence to etcd|	Stores the validated data in etcd.|
+|API Versioning|	Manages different API groups and versions (v1, apps/v1, etc.).|
+
+**How it all works together (a simplified flow):**
+
+1. A user runs kubectl create deployment my-app --image=nginx.
+2. The kubectl client sends an API call (a POST request) to the kube-apiserver.
+3. The API server authenticates and authorizes the user.
+4. The request is passed through admission controllers for validation and potential mutation.
+5. The API server serializes the Deployment object and stores its desired state in etcd.
+6. The API server sends a successful response back to kubectl.
+7. The kube-scheduler is watching the API server for new Pods. It sees that new Pods for the my-app Deployment need to be scheduled.
+8. The scheduler decides which worker node is best suited for the Pods and updates the Pod's specification through the API server to include the assigned node's name.
+9. The kubelet on that worker node is watching for Pods assigned to it. It sees the new Pod assigned to its node.
+10. The kubelet creates the Pod on the node and starts the Nginx container.
+11. The kubelet reports the Pod's status (e.g., Running) back to the API server, which updates the status in etcd.
+
+
