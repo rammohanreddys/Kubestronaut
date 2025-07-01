@@ -165,6 +165,60 @@ spec:
     emptyDir: {}
 ```
 
+#### Kubectl commands for Pod:**
+
+**Viewing Pods**
+
+| Command                                                    | Description                            |
+|:---------------------------------------------------------- |:-------------------------------------- |
+| `kubectl get pods`                                         | List all pods in the current namespace |
+| `kubectl get pods -n <namespace>`                          | List pods in a specific namespace      |
+| `kubectl describe pod <pod-name>`                          | Show detailed information about a pod  |
+| `kubectl get pod <pod-name> -o yaml`                       | Get full YAML of a pod                 |
+| `kubectl get pod <pod-name> -o jsonpath='{.status.phase}'` | Extract specific pod field             |
+
+**Creating & Managing Pods**
+
+
+| Command                              | Description                                      |
+|:------------------------------------ |:------------------------------------------------ |
+| `kubectl run <name> --image=<image>` | Quickly create a pod from an image (for testing) |
+| `kubectl apply -f pod.yaml`          | Create/update a pod from a YAML file             |
+| `kubectl delete pod <pod-name>`      | Delete a specific pod                            |
+| `kubectl delete -f pod.yaml`         | Delete a pod defined in YAML                     |
+
+**Interacting with Pod Containers**
+
+| Command                                                        | Description                             |
+|:-------------------------------------------------------------- |:--------------------------------------- |
+| `kubectl exec -it <pod-name> -- /bin/sh`                       | Open shell in a pod (BusyBox or Alpine) |
+| `kubectl exec -it <pod-name> -c <container-name> -- /bin/bash` | Exec into a specific container          |
+| `kubectl logs <pod-name>`                                      | View logs of a pod (single container)   |
+| `kubectl logs <pod-name> -c <container-name>`                  | View logs from a specific container     |
+| `kubectl port-forward <pod-name> 8080:80`                      | Forward local port to a port on the pod |
+| `kubectl cp <file> <pod-name>:/path`                           | Copy file into a pod                    |
+| `kubectl cp <pod-name>:/path <file>`                           | Copy file from a pod                    |
+
+**Pod Health & Status**
+
+| Command                                                       | Description                                           |
+|:--------------------------------------------------------------|:----------------------------------------------------- |
+| `kubectl get pods --watch`                                    | Continuously watch pod status                         |
+| `kubectl get pod <name> -o wide`                              | Show pod IP, node info, etc.                          |
+| `kubectl top pod`                                             | Show CPU and memory usage (requires `metrics-server`) |
+| `kubectl wait --for=condition=Ready pod/<name> --timeout=60s` | Wait for a pod to be ready                            |
+
+**Example: Create Pod YAML**
+
+```
+kubectl run nginx --image=nginx --dry-run=client -o yaml > nginx-pod.yaml
+```
+This creates a basic Pod YAML you can edit before applying with:
+```
+kubectl apply -f nginx-pod.yaml
+```
+
+
 
 
 
