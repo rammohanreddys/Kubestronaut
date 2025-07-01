@@ -143,6 +143,13 @@ ExecStart=/usr/local/bin/etcd \
   <img src="images/k8s-3.JPG" alt="Description of my awesome image" width="600">
 </p>
 
+#### Validate the ETCD component
+```
+kubectl get pods  -n kube-system
+```
+<p align="center">
+  <img src="images/k8s-6.JPG" alt="Description of my awesome image" width="600">
+</p>
 
 
 ### 2. Kube API Server:
