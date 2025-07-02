@@ -320,5 +320,112 @@ This toleration matches any value for team, allowing the pod to run on the taint
 | `env=prod:NoSchedule` | `key=env, value=dev, operator=Equal`  | ❌ No     |
 | `env=prod:NoSchedule` | `key=zone, operator=Exists`           | ❌ No     |
 
+## Node Selectors:
+
+### What is a Node Selector in Kubernetes?
+
+A Node Selector is the simplest way to schedule pods to specific nodes based on node labels. It lets you control where your pod runs by specifying that it should only be placed on nodes with matching labels.
+
+**Use Case:**
+
+Use nodeSelector when you want your pod to run only on nodes with a specific label, 
+e.g.:
+ - Workloads that require GPU nodes
+ - Segregating prod/dev workloads
+ - Running a pod only on a specific region/zone
+
+**Add a Label to a Node:**
+```
+kubectl label nodes node1 workload=frontend
+```
+**Use nodeSelector in a Pod/Deployment:**
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  nodeSelector:
+    workload: frontend
+  containers:
+  - name: nginx
+    image: nginx
+```
+
+`This pod will only be scheduled on nodes labeled workload=frontend.`
+
+**Behavior:**
+
+If no matching node is found:
+  - The pod stays in Pending state.
+  - It won’t fall back to any other node.
+
+## Node Affinity
+
+### What is Node Affinity in Kubernetes?
+
+Node Affinity is a more flexible and powerful alternative to nodeSelector used to control where a pod is scheduled based on node labels.
+It allows expressions, preferred rules, and multiple match conditions.
+
+**Use Cases:**
+
+  - Schedule pods based on region, zone, or hardware type.
+  - Prefer certain nodes but still allow fallback.
+  - Advanced scheduling for HA, cost, or performance optimization.
+
+**Node Affinity Types:**
+
+| Type                                              | Behavior                                         | Optional?  |
+| ------------------------------------------------- | ------------------------------------------------ | ---------- |
+| `requiredDuringSchedulingIgnoredDuringExecution`  | **Hard rule**: must match to be scheduled        | ❌ Required |
+| `preferredDuringSchedulingIgnoredDuringExecution` | **Soft rule**: prefer to match, but not required | ✅ Optional |
+
+
+### 1. Hard Node Affinity Example:
+
+```
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: zone
+            operator: In
+            values:
+            - us-east-1a
+```
+`Pod will only be scheduled on nodes where zone=us-east-1a.`
+
+### 2. Soft (Preferred) Node Affinity Example:
+
+```
+spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: instance-type
+            operator: In
+            values:
+            - spot
+```
+`Pod will prefer nodes with instance-type=spot, but can fall back if not available.`
+
+## Taints and Tolerations vs Node Selector vs Node Affinity:
+
+| Feature                  | **Taints & Tolerations**                | **Node Selector**                 | **Node Affinity**                            |
+| ------------------------ | --------------------------------------- | --------------------------------- | -------------------------------------------- |
+| **Purpose**              | Reject pods from nodes unless tolerated | Only allow pods on matching nodes | Match or prefer nodes based on labels        |
+| **Applies to**           | Nodes (taints) + Pods (tolerations)     | Pods only                         | Pods only                                    |
+| **Default behavior**     | Exclude by default                      | Include if match only             | Include or prefer based on rules             |
+| **Pod control**          | ✅ Tolerates taints to allow scheduling  | ✅ Specifies required node labels  | ✅ Full control with required/preferred rules |
+| **Supports expressions** | ❌ No                                    | ❌ No                              | ✅ Yes (In, NotIn, Exists, etc.)              |
+| **Supports soft rules**  | ✅ via `PreferNoSchedule`                | ❌ No                              | ✅ Yes (`preferredDuringScheduling...`)       |
+| **Eviction support**     | ✅ `NoExecute` effect                    | ❌ No                              | ❌ No                                         |
+| **Complexity**           | ⚠️ Medium                               | ✅ Simple                          | ⚠️ Advanced                                  |
 
 
