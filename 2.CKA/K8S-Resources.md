@@ -294,7 +294,7 @@ spec:
 
 
 
-#### 2. Deployment:
+#### 3. Deployment:
 
 A Deployment in Kubernetes is a higher-level abstraction that manages ReplicaSets and Pods. It enables declarative updates for your application (e.g., rolling updates, rollbacks, scaling).
 
@@ -370,6 +370,196 @@ spec:
 | Rollbacks            | ✅              | ❌              |
 | Ideal for Production | ✅              | ❌              |
 | Abstracts ReplicaSet | ✅              | ❌              |
+
+#### 4. Service:
+
+A Service in Kubernetes is an abstraction that exposes a set of pods as a network service. Since pods are ephemeral (can be replaced or rescheduled), a Service provides a stable IP and DNS name to access them reliably.
+
+**Why Use a Service?**
+
+ - Pods have dynamic IPs.
+ - Services enable stable communication between components (e.g., frontend → backend).
+ - They support load balancing across a group of pods.
+
+**Types of Services:**
+
+| Service Type          | Description                                                                 |
+| --------------------- | --------------------------------------------------------------------------- |
+| `ClusterIP` (default) | Exposes the service on an internal IP (accessible only within the cluster). |
+| `NodePort`            | Exposes the service on a static port on each node's IP.                     |
+| `LoadBalancer`        | Provisions an external IP via cloud provider's load balancer.               |
+| `ExternalName`        | Maps the service to an external DNS name (e.g., external database).         |
+
+##### 1. ClusterIP:
+
+ClusterIP is the default type of Kubernetes Service that exposes an application internally within the cluster. It creates a virtual IP address (VIP) that other services and pods in the cluster can use to communicate with the service.
+
+**How it Works?**
+
+ - You define a Service with type: ClusterIP.
+ - Kubernetes assigns it a virtual IP (ClusterIP).
+ - DNS like my-clusterip-service.default.svc.cluster.local is created.
+ - Any pod within the cluster can use that IP or DNS to reach the pods matching the selector
+
+
+**Example: ClusterIP Service**
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: myapp
+  ports:
+    - protocol: TCP
+      port: 80        # service port
+      targetPort: 8080  # pod port
+  type: ClusterIP
+```
+
+##### 2. NodePort:
+
+NodePort is a type of Kubernetes Service that exposes your application outside the cluster by opening a static port on each Node’s IP address.
+
+You can then access the service using:
+```
+http://<NodeIP>:<NodePort>
+```
+
+<p align="center">
+  <img src="images/k8s-14.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Example:**
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nodeport-service
+spec:
+  type: NodePort
+  selector:
+    app: myapp
+  ports:
+    - port: 80          # Service port (internal)
+      targetPort: 8080  # Pod/container port
+      nodePort: 30036   # Exposed on all node IPs (optional, auto-assigned if omitted)
+```
+
+##### 3. Load Balancer:
+
+A LoadBalancer service type exposes your application to the external world via a cloud provider's external load balancer (like GCP Load Balancer, AWS ELB, Azure LB).
+
+`It is the simplest way to expose a service to the internet on cloud-managed clusters.`
+
+<p align="center">
+  <img src="images/k8s-15.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Example:**
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-loadbalancer-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: myapp
+  ports:
+    - protocol: TCP
+      port: 80          # Port exposed externally
+      targetPort: 8080  # Port in the pod
+```
+
+##### 4. ExternalName:
+
+An ExternalName service is a special type of Kubernetes service that maps a service name to an external DNS name, rather than routing to a set of pods.
+
+It does not create a ClusterIP or proxy — instead, DNS queries to the service name return the external hostname.
+
+**Key Use Cases:**
+
+- Accessing external databases (e.g., RDS, MongoDB Atlas).
+- Connecting to third-party APIs from within your cluster.
+- Referencing external services using Kubernetes-native service names.
+
+**Example:**
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-external-service
+spec:
+  type: ExternalName
+  externalName: external.example.com
+```
+
+##### 5. Headless:
+
+A Headless Service is a special kind of Kubernetes Service without a Cluster IP. It is used when you want direct access to individual pods, instead of load balancing through a virtual IP.
+
+`It enables DNS-based service discovery where each pod gets its own DNS record`
+
+**Why Use Headless Services?**
+
+For stateful applications that need stable network identity, like:
+- Kafka
+- Cassandra
+- Elasticsearch
+For service discovery where clients need to connect directly to individual pods
+
+**Example:**
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-headless-service
+spec:
+  clusterIP: None
+  selector:
+    app: myapp
+  ports:
+    - port: 80
+      targetPort: 8080
+```
+
+
+**Service types differences:**
+
+|Characteristic|ClusterIP|NodePort|LoadBalancer|ExternalName|Headless|
+|:--------------|:---------|:--------|:------------|:------------|:--------|
+|Accessibility|Internal|External|External|Internal|Internal|
+|Use case|Expose Pods to other Pods in your cluster|Expose Pods on a specific Port of each Node|Expose Pods using a cloud load balancer resource|Configure a cluster DNS CNAME record that resolves to a specified address|Interface with external service discovery systems|
+|Suitable for|Internal communications between workloads|Accessing workloads outside the cluster, for one-off or development use|Serving publicly accessible web apps and APIs in production|Decoupling your workloads from direct dependencies on external service URLs|Advanced custom networking that avoids automatic Kubernetes proxying|
+|Client connection type|Stable cluster-internal IP address or DNS name|Port on Node IP address|IP address of external load balancer|Stable cluster-internal IP address or DNS name|Stable-cluster internal IP address or DNS name that also enables DNS resolution of the Pod IPs behind the Service|
+|External dependencies|None|Free port on each Node|A Load Balancer component (typically billable by your cloud provider)|None|None|
+
+**Useful Commands:**
+
+| Action           | Command                                        |
+| ---------------- | ---------------------------------------------- |
+| List services    | `kubectl get svc`                              |
+|                  | 'kubectl get services`                         |
+| Describe service | `kubectl describe svc my-clusterip-service`    |
+|List services in a specific namespace:| `kubectl get svc -n <namespace>`|
+|Edit a Service| `kubectl edit svc <service-name>`|
+|Create a Service from YAML| `kubectl apply -f service.yaml`|
+|Delete a Service | `kubectl delete svc <service-name>`|
+|Expose a Deployment as a Service| `kubectl expose deployment <deployment-name> --type=ClusterIP --port=80 --target-port=8080`|
+|Expose a Pod as a Service|`kubectl expose pod <pod-name> --port=80 --target-port=8080 --name=my-service`|
+|Port Forward to a Service| `kubectl port-forward svc/<service-name> <local-port>:<service-port>`|
+|                         | `kubectl port-forward svc/my-service 8080:80`|
+|Get Service Endpoints (Pod IPs)| `kubectl get endpoints <service-name>`|
+| Get service IP   | `kubectl get svc my-clusterip-service`         |
+| Get DNS name     | `<service-name>.<namespace>.svc.cluster.local` |
+|Check DNS Resolution from a Pod| `kubectl exec -it <pod-name> -- nslookup <service-name>`|
+||`kubectl exec -it nginx-pod -- nslookup my-service`|
+|Get External IP for LoadBalancer Services|`kubectl get svc <service-name> -o wide`|
 
 
 
