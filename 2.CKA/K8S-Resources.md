@@ -561,5 +561,50 @@ spec:
 ||`kubectl exec -it nginx-pod -- nslookup my-service`|
 |Get External IP for LoadBalancer Services|`kubectl get svc <service-name> -o wide`|
 
+##### 6. Namespace:
+
+A Namespace in Kubernetes is a logical partition within a cluster that allows you to group and isolate resources (pods, services, deployments, etc.). It helps in multi-team, multi-project, or environment setups (e.g., dev/test/prod).
+
+**Key Benefits:**
+
+| Feature                      | Purpose                                |
+| ---------------------------- | -------------------------------------- |
+| **Isolation**                | Isolates resources between teams/apps  |
+| **Access Control (RBAC)**    | Fine-grained user access per namespace |
+| **Resource Quotas & Limits** | Restrict CPU/memory per namespace      |
+| **Organizational Clarity**   | Logical grouping of resources          |
+
+**Default Namespaces:**
+
+| Namespace         | Purpose                                                         |
+| ----------------- | --------------------------------------------------------------- |
+| `default`         | Default for resources with no namespace                         |
+| `kube-system`     | Kubernetes core components (e.g., kube-dns, controller-manager) |
+| `kube-public`     | Public, readable by all (used during cluster bootstrapping)     |
+| `kube-node-lease` | Used for node heartbeats                                        |
+
+**Common kubectl Commands for Namespaces:**
+
+| Action                                              | Command                                                        |
+| --------------------------------------------------- | -------------------------------------------------------------- |
+| List all namespaces                                 | `kubectl get namespaces` or `kubectl get ns`                   |
+| Create a namespace                                  | `kubectl create namespace <name>`                              |
+| Delete a namespace                                  | `kubectl delete namespace <name>`                              |
+| View resources in a namespace                       | `kubectl get all -n <namespace>`                               |
+| Switch context to a namespace (with kubectl config) | `kubectl config set-context --current --namespace=<namespace>` |
+
+**Example:**
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+```
+
 
 
