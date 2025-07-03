@@ -108,7 +108,7 @@ spec:
 #### Summary Comparison Table:
 
 | Strategy       | Downtime | Parallel Versions | Rollback Ease | Tools Required       |
-| -------------- | -------- | ----------------- | ------------- | -------------------- |
+|:-------------- | -------- | ----------------- | ------------- |:-------------------- |
 | Recreate       | ❌ Yes    | ❌ No              | ❌ Manual      | None (built-in)      |
 | Rolling Update | ✅ No     | ✅ Yes             | ✅ With `undo` | None (built-in)      |
 | Blue-Green     | ✅ No     | ✅ Yes             | ✅ Easy        | Manual or Argo       |
@@ -123,3 +123,66 @@ Use rolling updates to deploy new versions without downtime.
 ```
 kubectl set image deployment/my-app my-container=my-image:v2
 ```
+
+- Kubernetes gradually replaces old pods with new ones.
+- Controlled using strategy.rollingUpdate in the Deployment spec.
+
+## 3. Rollback to Previous Version:
+
+If something goes wrong, rollback to a previous working version.
+```
+kubectl rollout undo deployment my-app
+```
+
+Track rollout history:
+```
+kubectl rollout history deployment my-app
+```
+
+## 4. Scaling the Application:
+
+Scale manually or automatically based on usage.
+
+Manual Scaling
+```
+kubectl scale deployment my-app --replicas=5
+```
+
+Auto Scaling using HPA (Horizontal Pod Autoscaler)
+```
+kubectl autoscale deployment my-app --cpu-percent=50 --min=2 --max=10
+```
+
+## 5. Health Checking
+
+Use liveness and readiness probes to monitor pod health.
+```
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 8080
+  initialDelaySeconds: 10
+  periodSeconds: 5
+```
+
+- Liveness: Restarts unhealthy pods.
+- Readiness: Marks pods as ready for traffic.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
