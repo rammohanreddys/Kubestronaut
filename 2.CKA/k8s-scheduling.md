@@ -322,7 +322,7 @@ This toleration matches any value for team, allowing the pod to run on the taint
 
 ## Node Selectors:
 
-### What is a Node Selector in Kubernetes?
+ ### What is a Node Selector in Kubernetes?
 
 A Node Selector is the simplest way to schedule pods to specific nodes based on node labels. It lets you control where your pod runs by specifying that it should only be placed on nodes with matching labels.
 
