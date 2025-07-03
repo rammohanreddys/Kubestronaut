@@ -245,9 +245,22 @@ Summary:
 | VPA                | Resources | Resource usage              | Batch jobs, stateful apps     |
 | Cluster Autoscaler | Nodes     | Pod scheduling failures     | Cost-efficient resource usage |
 
-## 5. Health Checking
+## 5. Health Checking:
 
-Use liveness and readiness probes to monitor pod health.
+In Kubernetes, health checks ensure that containers are alive and ready to serve traffic. These checks help Kubernetes restart failing containers or keep them out of service until they're ready.
+
+### Types of Probes (Health Checks)
+
+| Probe Type          | Purpose                                        | Restart Container? | Affects Service Traffic? |
+| ------------------- | ---------------------------------------------- | ------------------ | ------------------------ |
+| **Liveness Probe**  | Checks if the container is **alive**           | ✅ Yes              | ❌ No                     |
+| **Readiness Probe** | Checks if the container is **ready** to serve  | ❌ No               | ✅ Yes                    |
+| **Startup Probe**   | Checks if app **has started (slow boot apps)** | ✅ Yes              | ✅ Yes (after success)    |
+
+#### 1. Liveness Probe:
+
+`Restarts the container if the check fails continuously.`
+
 ```
 livenessProbe:
   httpGet:
@@ -256,9 +269,38 @@ livenessProbe:
   initialDelaySeconds: 10
   periodSeconds: 5
 ```
+#### 2. Readiness Probe:
 
-- Liveness: Restarts unhealthy pods.
-- Readiness: Marks pods as ready for traffic.
+`Controls whether the pod is included in the service endpoint list.`
+
+```
+readinessProbe:
+  tcpSocket:
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+```
+
+#### 3. Startup Probe
+
+`Used for slow-starting applications. Disables other probes until success.`
+
+```
+startupProbe:
+  httpGet:
+    path: /startup
+    port: 8080
+  failureThreshold: 30
+  periodSeconds: 5
+```
+Summary:
+
+| Probe Type      | Checks...         | What it does                          |
+| --------------- | ----------------- | ------------------------------------- |
+| Liveness Probe  | Is the app alive? | Restarts pod if unhealthy             |
+| Readiness Probe | Is app ready?     | Keeps pod out of Service until ready  |
+| Startup Probe   | Has app started?  | Waits for boot-up before other checks |
+
 
 ## 6. Configuration Management:
 
