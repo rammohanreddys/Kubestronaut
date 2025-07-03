@@ -148,17 +148,90 @@ kubectl rollout history deployment my-app
 
 ## 4. Scaling the Application:
 
-Scale manually or automatically based on usage.
+Scaling in Kubernetes allows you to increase or decrease the number of pod replicas to handle changes in workload demand efficiently.
 
-Manual Scaling
+There are two main types of scaling:
+
+### 1. Manual Scaling:
+
+You manually change the number of pods.
 ```
 kubectl scale deployment my-app --replicas=5
 ```
+### 2. Auto Scaling:
 
-Auto Scaling using HPA (Horizontal Pod Autoscaler)
+Kubernetes can automatically adjust the number of pods based on CPU/memory usage, or custom metrics.
+
+Types of Autoscaling:
+
+| Type                                | Resource | Component                   |
+| ----------------------------------- | -------- | --------------------------- |
+| **HPA** (Horizontal Pod Autoscaler) | Pods     | CPU, memory, custom metrics |
+| **VPA** (Vertical Pod Autoscaler)   | Pods     | Memory/CPU requests/limits  |
+| **Cluster Autoscaler**              | Nodes    | Adds/removes cluster nodes  |
+
+#### 1. Horizontal Pod Autoscaler (HPA):
+- Scales pods in or out based on observed metrics (CPU, memory).
+
+Command:
 ```
 kubectl autoscale deployment my-app --cpu-percent=50 --min=2 --max=10
 ```
+
+Template:
+```
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-app-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: my-app
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+```
+**Note:** `HPA requires resource requests/limits in your pod spec.`
+
+#### 2. Vertical Pod Autoscaler (VPA)
+
+- Adjusts resource requests/limits for a pod (not replica count).
+- Used when pod needs more CPU/memory, but you want to keep just one replica.
+
+`Not suitable for stateless web apps. Best for batch jobs or databases.`
+
+#### 3. Cluster Autoscaler:
+
+Automatically adds/removes nodes based on pod scheduling needs.
+- Works with cloud platforms like GKE, EKS, AKS
+- Adds nodes if pods are unschedulable
+- Removes underutilized nodes
+
+`Configured at cluster level, not per deployment.`
+
+How to Check Scaling Status:
+```
+kubectl get hpa
+kubectl describe hpa my-app
+kubectl get deployment my-app
+```
+
+Summary:
+
+| Type               | Scales    | Trigger                     | Common Use Case               |
+| ------------------ | --------- | --------------------------- | ----------------------------- |
+| Manual             | Pods      | Human action                | Quick control                 |
+| HPA                | Pods      | CPU, memory, custom metrics | Web apps, APIs                |
+| VPA                | Resources | Resource usage              | Batch jobs, stateful apps     |
+| Cluster Autoscaler | Nodes     | Pod scheduling failures     | Cost-efficient resource usage |
 
 ## 5. Health Checking
 
