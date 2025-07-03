@@ -6,6 +6,11 @@ Here’s a breakdown of the full application lifecycle in Kubernetes:
  2. Update & Roll Out New Versions
  3. Rollback to Previous Version
  4. Scaling the Application
+    - Manual Scaling
+    - Auto Scaling
+      - Horizontal Pod Autoscaler (HPA)
+      - Vertical Pod Autoscaler (VPA)
+      - Cluster Autoscaler
  5. Health Checking
  6. Configuration Management
     1. Commands and Arguments in a Kubernetes Pod Definition
