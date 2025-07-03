@@ -1,10 +1,15 @@
 # K8S - Scheduling
 
-Download Presentation Deck for this section from documents folder:
-- Kubernetes+-CKA-+0200+-+Scheduling.pdf
-- Networking.pdf
-- Static+Pods.pdf
-- Udemy+Kubernetes+taints-tolerations.pdf
+**Course Context:**
+- Mannual Scheduling Pods or No Scheduler
+- Labels, Selectors & Annotations
+- Taints & Tolerations
+- Node Selectors
+- Node Affinity
+- Resource Limits and Requests
+- Resource Quotas
+- Daemonsets
+- Priority Classes
 
 ## Manual Scheduling Pods or No Scheduler:
 
