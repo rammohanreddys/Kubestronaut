@@ -19,7 +19,11 @@ Here’s a breakdown of the full application lifecycle in Kubernetes:
       - Vertical Pod Autoscaler (VPA)
       - Cluster Autoscaler
  6. Health Checking
- 7. Configuration Management
+    - Types of Probes (Health Checks)
+      - Liveness Probe
+      - Readiness Probe
+      - Startup Probe
+ 8. Configuration Management
     1. Commands and Arguments in a Kubernetes Pod Definition
      
    
