@@ -230,13 +230,14 @@ kubectl apply -f pod-definition.yaml
 ```
 To override the entrypoint from cli:
 ```
-docker run --name ubuntu-sleeper --entrypoint "sleeper2.0" ubuntu-sleeper
+docker run --name ubuntu-sleeper --entrypoint "sleeper2.0" ubuntu-sleeper 10
 ```
 In case of K8S:
 
 <p align="center">
   <img src="images/k8s-26.JPG" alt="Description of my awesome image" width="600">
 </p>
+
 
 
 
