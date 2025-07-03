@@ -10,21 +10,23 @@ Here’s a breakdown of the full application lifecycle in Kubernetes:
       - Canary Deployment
       - A/B Testing
       - Argo Rollouts
- 3. Update & Roll Out New Versions
- 4. Rollback to Previous Version
- 5. Scaling the Application
+ 2. Update & Roll Out New Versions
+ 3. Rollback to Previous Version
+ 4. Scaling the Application
     - Manual Scaling
     - Auto Scaling
       - Horizontal Pod Autoscaler (HPA)
       - Vertical Pod Autoscaler (VPA)
       - Cluster Autoscaler
- 6. Health Checking
+ 5. Health Checking
     - Types of Probes (Health Checks)
       - Liveness Probe
       - Readiness Probe
       - Startup Probe
- 8. Configuration Management
-    1. Commands and Arguments in a Kubernetes Pod Definition
+ 6. Configuration Management
+    - Commands and Arguments in a Kubernetes Pod Definition
+    - Environment variables
+      - 
      
    
 ## 1. Deploy the K8S Application:
@@ -390,13 +392,123 @@ Summary:
 
 ### 2. Environment variables:
 
-### 3. ConfigMaps:
+In Kubernetes, environment variables (env vars) can be passed to containers to provide configuration values, secrets, runtime information, etc., without hardcoding them in your app.
 
-### 4. Secrets:
+In Kubernetes, you can set environment variables for your containers in multiple ways, depending on where the values come from and how they should be used.
 
-### 5. Secret Store CSI Driver:
+6 Main Ways to Set Environment Variables in Kubernetes:
 
-### 6. Encrypting Secret data at Rest:
+| # | Method                              | Description                                                 |
+| - | ----------------------------------- | ----------------------------------------------------------- |
+| 1 | **Direct key-value in YAML**        | Hardcoded env vars in pod spec                              |
+| 2 | **From ConfigMap (specific keys)**  | Load specific keys from a ConfigMap                         |
+| 3 | **From Secret (specific keys)**     | Load sensitive keys from a Secret                           |
+| 4 | **From entire ConfigMap or Secret** | Load all keys as env vars using `envFrom`                   |
+| 5 | **From Pod/Node metadata**          | Use `fieldRef` to get values like pod name, namespace       |
+| 6 | **From container resources**        | Use `resourceFieldRef` to expose CPU/memory limits/requests |
+
+
+#### 1. Set Environment Variables Directly:
+
+```
+spec:
+  containers:
+  - name: my-app
+    image: nginx
+    env:
+    - name: ENVIRONMENT
+      value: "production"
+    - name: APP_VERSION
+      value: "v1.2"
+```
+`These values are static and defined in the Pod/Deployment YAML.`
+
+You can use kubectl set env to add, update, or remove environment variables in running resources like Deployments, DaemonSets, StatefulSets, etc.
+
+```
+kubectl set env deployment/my-app ENVIRONMENT=production                  # Set an Environment Variable on deployment
+kubectl set env deployment/my-app ENV=prod VERSION=v1.5 DEBUG=true        # Set Multiple Environment Variables
+kubectl set env deployment/my-app --env-file=env.list                     # Set env with a File
+kubectl set env deployment/my-app --list                                  # View Current Environment Variables
+kubectl set env deployment/my-app ENVIRONMENT-                            # Remove an Environment Variable
+```
+
+#### 2. ConfigMaps:
+
+A ConfigMap in Kubernetes is an object used to store non-sensitive configuration data (key-value pairs) and inject it into pods as environment variables, command-line arguments, or configuration files.
+
+Use Cases:
+- Externalize application config (URLs, log levels, etc.)
+- Decouple config from app code
+- Inject config into pods dynamically
+
+**ConfigMaps Creation:**
+
+1. Create a ConfigMap from literal key-values:
+
+```
+kubectl create configmap app-config \
+  --from-literal=APP_MODE=production \
+  --from-literal=LOG_LEVEL=debug
+```
+
+2. Create a ConfigMap from a file:
+```
+kubectl create configmap app-config --from-file=config.properties
+```
+
+3. Create a ConfigMap from a YAML manifest:
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  APP_MODE: "production"
+  LOG_LEVEL: "debug"
+```
+
+**Use ConfigMap in a Pod:**
+
+1. As Environment Variables:
+```
+envFrom:
+- configMapRef:
+    name: app-config
+```
+
+2. specify key-by-key:
+```
+env:
+- name: APP_MODE
+  valueFrom:
+    configMapKeyRef:
+      name: app-config
+      key: APP_MODE
+```
+
+3. As a Mounted Volume:
+```
+volumes:
+- name: config-volume
+  configMap:
+    name: app-config
+
+volumeMounts:
+- name: config-volume
+  mountPath: /etc/config
+```
+
+`Each key becomes a file under /etc/config, and the value is the file content.`
+
+
+
+
+
+
+#### 3. Secrets:
+
+#### 4. Encrypting Secret data at Rest:
 
 
 
