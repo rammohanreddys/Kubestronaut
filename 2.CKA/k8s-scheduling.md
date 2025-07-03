@@ -36,7 +36,7 @@ However, there are ways to influence pod placement or migrate existing pods manu
   3. Use kubectl patch or edit Deployment
   4. Manually delete and recreate the pod with --nodeName
 
- ## Labels, Selectors & Annotations:
+## Labels, Selectors & Annotations:
 
  Labels and Selectors are core concepts in Kubernetes used to organize, filter, and select resources (like pods, services, deployments, etc.).
 
