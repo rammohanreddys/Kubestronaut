@@ -32,7 +32,7 @@ Resources for this lecture available at documents folder
 
     ❑ Kube Proxy
 
-### Kubernetes Architecture:
+#### Kubernetes Architecture:
 
 The Kubernetes cluster architecture is divided into two main segments:
 
@@ -45,9 +45,9 @@ The Kubernetes cluster architecture is divided into two main segments:
 |Master Node|etcd, Kube Scheduler, Controllers, Kube API Server|Centralized control and management of the entire cluster.|
 |Worker Node|Kubelet, Kube Proxy|Responsible for the lifecycle management of containers and ensuring network communication between services.|
 
-### Master Components:
+##### Master Components:
 
-### 1. ETCD
+###### 1. ETCD
 
 **What is etcd?**
 
@@ -66,12 +66,12 @@ etcd is a distributed key-value store used by Kubernetes (K8s) to store all its 
    For example, the kube-scheduler watches for new Pods to be scheduled, the kube-controller-manager watches for changes in objects, and the kubelet on each node watches for 
    Pods assigned to it. When a change occurs in etcd, the watching components are notified and can take action.
 
-#### How does etcd work with Kubernetes components?
+**How does etcd work with Kubernetes components?**
 
 The Kubernetes components interact with etcd through the API Server (kube-apiserver). The API Server is the only component that should directly read from and write to etcd. This design provides a centralized and secure access point, ensuring data consistency and integrity.
 
 
-#### **Here's a simplified flow of how it works:**
+**Here's a simplified flow of how it works:**
 
 **1. User action:** A user or an automated process submits a request to the Kubernetes API Server, for example, to create a new Deployment.
 
@@ -85,7 +85,7 @@ The Kubernetes components interact with etcd through the API Server (kube-apiser
 
 **6. State updates:** As the state of the Pods and other resources changes (e.g., a Pod starts running), the kubelet and other components update the resource's status through the API Server, which then stores the updated information in etcd.
 
-### Install ETCD:
+**Install ETCD:**
 
 ```
 ## Download Binaries: ##
@@ -111,7 +111,7 @@ tar xzvf etcd-v3.3.11-linux-amd64.tar.gz
 ./etcdctl get key1
 ```
 
-### Set Up Manual:
+**Set Up Manual:**
 ```
 ## Download Binaries: ##
 wget -q --https-only \
@@ -143,7 +143,7 @@ ExecStart=/usr/local/bin/etcd \
   <img src="images/k8s-3.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-#### Validate the ETCD component
+**Validate the ETCD component:**
 ```
 kubectl get pods  -n kube-system
 ```
@@ -152,7 +152,7 @@ kubectl get pods  -n kube-system
 </p>
 
 
-### 2. Kube API Server:
+###### 2. Kube API Server:
 
 The Kubernetes API server (kube-apiserver) is the central management component of Kubernetes. It exposes the Kubernetes API, which is used by all internal components and external clients (like kubectl, controllers, and other services) to communicate with the cluster.
 
@@ -190,7 +190,7 @@ The Kubernetes API server (kube-apiserver) is the central management component o
 10. The kubelet creates the Pod on the node and starts the Nginx container.
 11. The kubelet reports the Pod's status (e.g., Running) back to the API server, which updates the status in etcd.
 
-### API-Server Configuration:
+**API-Server Configuration:**
 
 ```
 ## Download Binarie
@@ -222,7 +222,7 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --service-node-port-range=30000-32767 \\
   --v=2
 ```
-### View Api-Server - kubeadm 
+**View Api-Server - kubeadm**
 
 ```
 kubectl get pods  -n kube-system
@@ -231,13 +231,13 @@ kubectl get pods  -n kube-system
   <img src="images/k8s-8.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-### 3. Kube Controller Manager:
+###### 3. Kube Controller Manager:
 
 The Kubernetes Controller Manager (kube-controller-manager) is a key component of the Kubernetes control plane. It runs controller loops that monitor the state of the cluster and make changes to move it toward the desired state, as defined in the Kubernetes API (etcd).
 
 **kube-apiserver** acts as the cluster's "**front door**" and "**record keeper**," the **kube-controller-manager** is the "**active brain**" that constantly works to drive the cluster towards its desired state.
 
-#### **What is kube-controller-manager?**
+**What is kube-controller-manager?**
 
 It’s a daemon that runs a set of built-in controllers, each responsible for a specific resource or function in Kubernetes. All these controllers are compiled into a single binary and run as one process, which simplifies management and avoids duplication.
 
@@ -271,19 +271,19 @@ This continuous reconciliation process is what makes Kubernetes self-healing and
 |Deployment Controller|	Handles Deployment rollouts and updates.|
 |PVC Binder Controller|	Binds PersistentVolumeClaims to PersistentVolumes.|
 
-#### Installing Kuber-controller manager:
+**Installing Kuber-controller manager:**
 
 <p align="center">
   <img src="images/k8s-10.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-#### View kube-controller-manager - kube-adm
+**View kube-controller-manager - kube-adm**
 
 <p align="center">
   <img src="images/k8s-11.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-### 4. Kube Scheduler:
+###### 4. Kube Scheduler:
 
 The Kubernetes Scheduler (kube-scheduler) is a key component of the Kubernetes control plane that is responsible for assigning newly created pods to nodes in your cluster.
 
@@ -331,13 +331,13 @@ Examples of scoring:
 | **Custom Schedulers**    | You can run your own custom scheduler for specific workloads. |
 
 
-## Worker Components:
+##### Worker Components:
 
-### 1. Kubelet:
+###### 1. Kubelet:
 
 The kubelet is an agent that runs on every worker node in a Kubernetes cluster. It is the primary node agent and is responsible for ensuring that containers are running in a Pod. It's the "worker bee" that takes instructions from the control plane and executes them on its assigned node.
 
-#### Key Roles and Responsibilities:
+**Key Roles and Responsibilities:**
 
 **The kubelet's job can be summarized as:** maintaining a set of Pods and their containers on its node according to the specifications received from the API Server.
 
@@ -366,7 +366,7 @@ The kubelet is an agent that runs on every worker node in a Kubernetes cluster. 
      for "static Pod" manifests. This is a common way to run the control plane components (like the kube-apiserver, etcd, kube-scheduler, and kube-controller-manager) as 
      Pods on the master nodes.
 
-### 2. Kube-proxy:
+###### 2. Kube-proxy:
 
 Kube-proxy is a network proxy that runs on each node in the cluster. Responsible for maintaining network rules on nodes to allow communication to your Kubernetes Services.
 Implements service discovery and load balancing for TCP/UDP traffic across pods.
