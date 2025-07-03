@@ -1,5 +1,19 @@
 # K8S - Resources:
 
+**Course Context:**
+
+- Core Categories of Kubernetes Resources
+  - Workload Resources
+    - Pod
+    - ReplicaSet
+    - Deployment
+    - Service
+      - ClusterIP
+      - NodePort
+      - LoadBalancer
+      - ExternalName
+      - HeadLess
+    - Namespace
 ## Core Categories of Kubernetes Resources
 
 | Category                | Description                                   | Examples                                                                           |
