@@ -504,12 +504,76 @@ volumeMounts:
 
 `Each key becomes a file under /etc/config, and the value is the file content.`
 
-
-
-
-
-
 #### 3. Secrets:
+
+A Secret in Kubernetes is an object that stores sensitive data, such as passwords, tokens, SSH keys, or TLS certificates. Secrets allow you to decouple confidential information from your application code and configuration.
+
+Why Use Secrets?
+- Keeps sensitive data out of container images and configs
+- Supports encryption at rest and in transit
+- Integrates easily with Pods as env vars, files, or command args
+
+Types of Secrets:
+
+| Secret Type                      | Description                            |
+| -------------------------------- | -------------------------------------- |
+| `Opaque`                         | Default type for generic secrets       |
+| `kubernetes.io/dockerconfigjson` | For private container registry auth    |
+| `kubernetes.io/tls`              | For storing TLS certs and private keys |
+| `bootstrap.kubernetes.io/token`  | Bootstrap tokens for kubelet auth      |
+
+1. Create a Secret from literal key-values:
+
+```
+kubectl create secret generic db-secret \
+  --from-literal=username=admin \
+  --from-literal=password=pa55w0rd
+```
+
+2. Create a Secret from a file:
+
+```
+kubectl create secret generic app-cert --from-file=cert.crt --from-file=key.key
+```
+
+3. From a YAML manifest:
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+data:
+  username: YWRtaW4=        # base64 encoded
+  password: cGE1NXcwcmQ=    # base64 encoded
+```
+
+4. Use Secrets in a Pod As Environment Variables:
+```
+env:
+- name: DB_USER
+  valueFrom:
+    secretKeyRef:
+      name: db-secret
+      key: username
+- name: DB_PASS
+  valueFrom:
+    secretKeyRef:
+      name: db-secret
+      key: password
+```
+5. Use Secrets in a Pod As Mounted Volume:
+```
+volumes:
+- name: secret-volume
+  secret:
+    secretName: db-secret
+
+volumeMounts:
+- name: secret-volume
+  mountPath: /etc/secrets
+```
+
 
 #### 4. Encrypting Secret data at Rest:
 
