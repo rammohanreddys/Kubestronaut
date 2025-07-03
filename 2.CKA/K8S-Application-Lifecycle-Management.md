@@ -172,8 +172,71 @@ livenessProbe:
 - Liveness: Restarts unhealthy pods.
 - Readiness: Marks pods as ready for traffic.
 
+## 6. Configuration Management:
 
+### 1. Commands and Arguments in a Kubernetes Pod Definition:
 
+In Kubernetes, you can control what your container executes on startup using the command and args fields in the pod or container spec. These override the container image's default ENTRYPOINT and CMD instructions (from Dockerfile).
+
+Basic Definitions:
+
+| Field     | Overrides Dockerfile | Equivalent Docker Concept |
+| --------- | -------------------- | ------------------------- |
+| `command` | `ENTRYPOINT`         | Command to run            |
+| `args`    | `CMD`                | Arguments to the command  |
+
+Syntax in Pod YAML:
+```
+spec:
+  containers:
+  - name: demo
+    image: busybox
+    command: ["sleep"]        # Overrides ENTRYPOINT
+    args: ["3600"]            # Overrides CMD
+
+```
+
+This makes the container run: `sleep 3600'
+
+Important Notes
+- Both command and args take string arrays (list format).
+- If you provide only args, it is passed to the image's default ENTRYPOINT.
+- If you provide only command, it replaces the entrypoint and the image's CMD is ignored.
+
+Example:
+
+Dockerfile:
+```
+FROM Ubuntu
+ENTRYPOINT ["sleep"]
+CMD ["5"]
+```
+pod-definition.yaml:
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-sleeper-pod
+spec:
+  containers:
+  - name: ubuntu-sleeper
+    image: ubuntu-sleeper
+    command: ["sleep"]
+    args: ["5"]
+```
+Now apply the pod definition file:
+```
+kubectl apply -f pod-definition.yaml
+```
+To override the entrypoint from cli:
+```
+docker run --name ubuntu-sleeper --entrypoint "sleeper2.0" ubuntu-sleeper
+```
+In case of K8S:
+
+<p align="center">
+  <img src="images/k8s-26.JPG" alt="Description of my awesome image" width="600">
+</p>
 
 
 
