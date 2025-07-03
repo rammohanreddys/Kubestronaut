@@ -11,6 +11,7 @@
 - Resource Quotas
 - Daemonsets
 - Priority Classes
+- Admission Controllers
 
 ## Manual Scheduling Pods or No Scheduler:
 
@@ -670,3 +671,173 @@ spec:
     image: nginx
 ```
 
+## Admission Controllers:
+
+Admission Controllers are plug-ins that intercept API requests after authentication and authorization, but before the object is persisted in etcd.
+
+They validate, mutate, or deny requests to ensure policy enforcement, security, and system rules.
+
+**Flow of a Kubernetes API Request:**
+
+<p align="center">
+  <img src="images/k8s-25.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**What Can Admission Controllers Do?**
+
+<p align="center">
+  <img src="images/k8s-20.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+| Function                      | Example                                       |
+| ----------------------------- | --------------------------------------------- |
+| **Mutation**                  | Auto-inject sidecars (e.g., Istio)            |
+| **Validation**                | Reject pods missing resource limits           |
+| **Security enforcement**      | Block privileged containers                   |
+| **Defaulting**                | Set default values like tolerations or labels |
+| **Quota enforcement**         | Enforce ResourceQuotas                        |
+| **Custom policy enforcement** | Integrate with tools like OPA/Gatekeeper      |
+
+**Types of Admission Controllers:**
+
+<p align="center">
+  <img src="images/k8s-21.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+| Type           | Description                               |
+| -------------- | ----------------------------------------- |
+| **Validating** | Checks if a request should be accepted    |
+| **Mutating**   | Modifies the object before it's persisted |
+
+`You can have both for a single request: mutating runs before validating.`
+
+**Admission Webhooks (Custom Controllers)**
+
+You can create your own admission controller using:
+- MutatingAdmissionWebhook – modifies the object
+- ValidatingAdmissionWebhook – validates the object
+These are HTTP webhooks called by the API server before saving a resource.
+
+**Examples of Common Admission Controllers:**
+
+| Controller                       | Function                                                        |
+| -------------------------------- | --------------------------------------------------------------- |
+| `NamespaceLifecycle`             | Prevents deleting default namespaces                            |
+| `ResourceQuota`                  | Enforces quotas per namespace                                   |
+| `LimitRanger`                    | Enforces resource requests/limits                               |
+| `PodSecurityPolicy` (deprecated) | Restricts security contexts (replaced by PodSecurity admission) |
+| `MutatingAdmissionWebhook`       | Allows dynamic mutation (e.g., sidecar injection)               |
+| `ValidatingAdmissionWebhook`     | Enforces external policies (e.g., OPA)                          |
+| `NodeRestriction`                | Prevents kubelet from modifying resources it shouldn't          |
+| `PodTolerationRestriction`       | Restricts what tolerations are allowed on pods                  |
+
+**How Are They Configured?**
+Admission controllers are configured in the API server startup flags:
+```
+--enable-admission-plugins=NamespaceLifecycle,LimitRanger,...
+--disable-admission-plugins=...
+```
+<p align="center">
+  <img src="images/k8s-24.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+`For managed Kubernetes (like GKE, EKS, AKS), you may not be able to directly change them — but you can use webhooks for custom behavior.`
+
+**Detailed examples for Adminssion controller use cases:**
+
+### 1. Limit Resource Usage with LimitRanger
+
+`Prevents pods from being created without resource limits.`
+
+**Use case:** Ensure every container has CPU and memory limits defined.
+
+Example Behavior:
+- If a pod lacks resources.limits, the request is rejected.
+```
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+  namespace: dev
+spec:
+  limits:
+  - default:
+      cpu: "500m"
+      memory: "512Mi"
+    defaultRequest:
+      cpu: "250m"
+      memory: "256Mi"
+    type: Container
+```
+`Enforced by the LimitRanger admission controller.`
+
+### 2. Enforce Namespace Quotas with ResourceQuota
+
+Prevent creation of pods, services, etc. beyond quota limits in a namespace.
+
+Example Behavior:
+- If total CPU in a namespace exceeds 4 cores, new pods are denied.
+```
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: dev
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: "8Gi"
+```
+`Enforced by the ResourceQuota controller.`
+
+### 3. Prevent Insecure Pods with PodSecurity Admission:
+
+`Replace the deprecated PodSecurityPolicy.`
+
+Example Behavior:
+- Block pods running with privileged: true or without dropping capabilities.
+```
+kubectl label namespace dev pod-security.kubernetes.io/enforce=baseline
+```
+
+### 4. Inject Sidecars Automatically with MutatingAdmissionWebhook:
+
+`Used by service meshes like Istio or logging agents like Fluent Bit.`
+
+Example Behavior:
+- Automatically injects a logging/monitoring sidecar into every pod in a namespace.
+
+`Example: Istio auto-injects Envoy sidecar via webhook.`
+```
+kubectl label namespace my-app istio-injection=enabled
+```
+
+### 5. Reject Pods Without Required Labels with ValidatingAdmissionWebhook:
+
+`Enforce labeling standards in production.`
+
+Example Behavior:
+- If a pod is missing env=prod, it is denied.
+```
+Implemented using a custom validating webhook.
+```
+
+### 6. Restrict Tolerations with PodTolerationRestriction:
+
+`Prevent users from tolerating taints unless allowed.`
+
+Example Behavior:
+- Developers can't create pods with toleration for dedicated=infra.
+```
+This admission controller prevents misuse of infrastructure nodes.
+```
+
+### 7. Prevent Node Impersonation with NodeRestriction:
+
+`Ensures kubelets can only modify their own pods or node objects.`
+
+Example Behavior:
+- Prevent a compromised kubelet from modifying resources on other nodes.
+```
+Automatically enabled in most secure clusters.
+```
