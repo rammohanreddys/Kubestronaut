@@ -24,7 +24,7 @@ A Pod is the smallest and simplest unit in the Kubernetes object model that you 
   - Storage volumes
   - Lifecycle
 
-**Types of Pod:**
+##### Types of Pod:
 
 * **Single Container Pod:** The "One-container-per-pod" is the most common use case and kubernetes manage po rather that container directly.
 * **Multi Container Pod:** A Pod can group multiple containers with shared storage volumes and network resources. generally, we name it as Primary container and
@@ -85,7 +85,7 @@ spec:
     - containerPort: 80
 ```
 
-**Init Containers:**
+##### Init Containers:
 
 Init Containers are special containers that run before the main app containers in a Pod. They are used to set up or prepare the environment for the main containers.
 
@@ -120,7 +120,7 @@ spec:
     command: ["sh", "-c", "echo Main app running... && sleep 3600"]
 ```
 
-**Sidecar Containers:**
+##### Sidecar Containers:
 
 A sidecar container is a container that runs alongside the main application container in the same Pod. It is used to provide supporting functionality that complements or enhances the main container’s capabilities.
 Sidecars share:
@@ -561,7 +561,7 @@ spec:
 ||`kubectl exec -it nginx-pod -- nslookup my-service`|
 |Get External IP for LoadBalancer Services|`kubectl get svc <service-name> -o wide`|
 
-##### 6. Namespace:
+#### 6. Namespace:
 
 A Namespace in Kubernetes is a logical partition within a cluster that allows you to group and isolate resources (pods, services, deployments, etc.). It helps in multi-team, multi-project, or environment setups (e.g., dev/test/prod).
 
