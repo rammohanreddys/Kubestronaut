@@ -561,7 +561,7 @@ spec:
 ||`kubectl exec -it nginx-pod -- nslookup my-service`|
 |Get External IP for LoadBalancer Services|`kubectl get svc <service-name> -o wide`|
 
-#### 6. Namespace:
+#### 5. Namespace:
 
 A Namespace in Kubernetes is a logical partition within a cluster that allows you to group and isolate resources (pods, services, deployments, etc.). It helps in multi-team, multi-project, or environment setups (e.g., dev/test/prod).
 
