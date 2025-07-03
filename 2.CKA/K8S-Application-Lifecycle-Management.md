@@ -26,7 +26,10 @@ Here’s a breakdown of the full application lifecycle in Kubernetes:
  6. Configuration Management
     - Commands and Arguments in a Kubernetes Pod Definition
     - Environment variables
-      - 
+      - Set Environment Variables Directly
+      - ConfigMaps
+      - Secrets
+      - Encrypting Secret data at Rest
      
    
 ## 1. Deploy the K8S Application:
