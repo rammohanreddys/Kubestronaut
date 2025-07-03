@@ -7,6 +7,9 @@ Here’s a breakdown of the full application lifecycle in Kubernetes:
  3. Rollback to Previous Version
  4. Scaling the Application
  5. Health Checking
+ 6. Configuration Management
+    1. Commands and Arguments in a Kubernetes Pod Definition
+     
    
 ## 1. Deploy the Application:
 
@@ -237,6 +240,34 @@ In case of K8S:
 <p align="center">
   <img src="images/k8s-26.JPG" alt="Description of my awesome image" width="600">
 </p>
+
+How to Check Actual Command in a Running Pod:
+
+```
+kubectl get pod <pod-name> -o jsonpath='{.spec.containers[*].command}'
+kubectl get pod <pod-name> -o jsonpath='{.spec.containers[*].args}'
+```
+
+Summary:
+| Field     | Description                          |
+| --------- | ------------------------------------ |
+| `command` | Overrides image's `ENTRYPOINT`       |
+| `args`    | Overrides image's `CMD`              |
+| Format    | List (`["/bin/sh", "-c"]`)           |
+| Use case  | Customize container startup behavior |
+
+
+### 2. Environment variables:
+
+### 3. ConfigMaps:
+
+### 4. Secrets:
+
+### 5. Secret Store CSI Driver:
+
+### 6. Encrypting Secret data at Rest:
+
+
 
 
 
