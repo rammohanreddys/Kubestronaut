@@ -2,21 +2,28 @@
 
 Kubernetes provides tools and concepts to manage the entire lifecycle of a containerized application — from deployment to deletion, including scaling, upgrades, health checking, and rollback.
 Here’s a breakdown of the full application lifecycle in Kubernetes:
- 1. Deploy the Application
- 2. Update & Roll Out New Versions
- 3. Rollback to Previous Version
- 4. Scaling the Application
+ 1. Deploy the K8S Application
+    - Kubernetes Deployment Strategies
+      - Recreate Strategy
+      - Rolling Update Strategy
+      - Blue-Green Deployment
+      - Canary Deployment
+      - A/B Testing
+      - Argo Rollouts
+ 3. Update & Roll Out New Versions
+ 4. Rollback to Previous Version
+ 5. Scaling the Application
     - Manual Scaling
     - Auto Scaling
       - Horizontal Pod Autoscaler (HPA)
       - Vertical Pod Autoscaler (VPA)
       - Cluster Autoscaler
- 5. Health Checking
- 6. Configuration Management
+ 6. Health Checking
+ 7. Configuration Management
     1. Commands and Arguments in a Kubernetes Pod Definition
      
    
-## 1. Deploy the Application:
+## 1. Deploy the K8S Application:
 
 Deploy your app using YAML manifests or tools like kubectl, Helm, or Kustomize.
 
