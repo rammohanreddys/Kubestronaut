@@ -1,9 +1,13 @@
 # K8S - Application LifeCycle Management:
 
 Kubernetes provides tools and concepts to manage the entire lifecycle of a containerized application — from deployment to deletion, including scaling, upgrades, health checking, and rollback.
-
 Here’s a breakdown of the full application lifecycle in Kubernetes:
-
+1. Deploy the Application
+2. Update & Roll Out New Versions
+3. Rollback to Previous Version
+4. Scaling the Application
+5. Health Checking
+   
 ## 1. Deploy the Application:
 
 Deploy your app using YAML manifests or tools like kubectl, Helm, or Kustomize.
