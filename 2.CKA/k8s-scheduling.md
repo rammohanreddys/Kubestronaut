@@ -415,7 +415,7 @@ spec:
 ```
 `Pod will prefer nodes with instance-type=spot, but can fall back if not available.`
 
-## Taints and Tolerations vs Node Selector vs Node Affinity:
+### Taints and Tolerations vs Node Selector vs Node Affinity:
 
 | Feature                  | **Taints & Tolerations**                | **Node Selector**                 | **Node Affinity**                            |
 | ------------------------ | --------------------------------------- | --------------------------------- | -------------------------------------------- |
@@ -429,3 +429,95 @@ spec:
 | **Complexity**           | ⚠️ Medium                               | ✅ Simple                          | ⚠️ Advanced                                  |
 
 
+## Resource Limits and Requests:
+
+Resource limits in Kubernetes are constraints you set on CPU and memory usage for containers in a pod. They help prevent a single container from over-consuming cluster resources, improving stability, fairness, and predictability.
+
+Two Types of Resource Constraints:
+
+| Type         | Description                                               |
+|:------------ |:--------------------------------------------------------- |
+| **Requests** | The minimum amount of resources a container is guaranteed |
+| **Limits**   | The maximum amount of resources a container can use       |
+
+**Example:**
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: resource-demo
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "250m"
+      limits:
+        memory: "256Mi"
+        cpu: "500m"
+```
+**How Kubernetes Uses Them:**
+- Scheduler uses requests to decide where to place pods.
+- Kubelet enforces limits at runtime.
+- If memory usage exceeds the limit, container is OOMKilled.
+- If CPU usage exceeds the limit, container is throttled, not killed. 
+
+**View Resource Requests and Limits**:
+```
+kubectl get pod <pod-name> -o jsonpath='{.spec.containers[*].resources}'
+kubectl describe pod <pod-name> | grep -A5 "Containers"
+```
+
+## Resource Quotas:
+
+A ResourceQuota in Kubernetes sets limits on resource usage per namespace to prevent a single team or application from consuming all cluster resources.
+
+It applies to CPU, memory, pods, services, persistent volumes, and more — ensuring fair sharing across tenants in a multi-team or multi-project environment.
+
+### Why Use ResourceQuota?
+
+ - Limit the total resources used by all objects in a namespace
+ - Prevent resource starvation across the cluster
+ - Enforce team or environment boundaries (dev, prod, etc.)
+
+**Basic Example:**
+```
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: dev
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: "4Gi"
+    limits.cpu: "4"
+    limits.memory: "8Gi"
+```
+This means:
+- All pods in dev namespace combined can request up to:
+  - vCPUs and 4Gi memory (minimum required)
+  - vCPUs and 8Gi memory (maximum allowed)
+
+**Other Resources You Can Restrict:**
+
+| Resource Type      | Key Example                                       |
+|:------------------ |:------------------------------------------------- |
+| Number of pods     | `pods`                                            |
+| Number of services | `services`                                        |
+| PVC storage total  | `requests.storage`                                |
+| Object count       | `replicationcontrollers`, `secrets`, `configmaps` |
+| GPU limits         | `requests.nvidia.com/gpu`                         |
+
+**Important Note:**
+- To enforce quotas effectively, your pods must specify resource requests/limits:
+- If requests/limits are missing, the pod might be blocked or fail to schedule under a ResourceQuota.
+
+**View ResourceQuota Usage:**
+```
+kubectl get resourcequota -n dev
+kubectl describe resourcequota compute-quota -n dev
+```
