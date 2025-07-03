@@ -4,7 +4,7 @@ Kubernetes provides tools and concepts to manage the entire lifecycle of a conta
 
 Here’s a breakdown of the full application lifecycle in Kubernetes:
 
-## 1.  Deploy the Application:
+## 1. Deploy the Application:
 
 Deploy your app using YAML manifests or tools like kubectl, Helm, or Kustomize.
 
