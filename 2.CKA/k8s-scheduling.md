@@ -521,3 +521,146 @@ This means:
 kubectl get resourcequota -n dev
 kubectl describe resourcequota compute-quota -n dev
 ```
+## Daemonsets:
+
+A DaemonSet ensures that a copy of a pod runs on every node (or a subset of nodes) in your Kubernetes cluster.
+
+**Use Cases:**
+DaemonSets are commonly used to run one pod per node for:
+
+| Purpose                  | Example Tools                |
+| ------------------------ | ---------------------------- |
+| Log collection           | Fluentd, Filebeat            |
+| Node monitoring          | Prometheus Node Exporter     |
+| Security agents          | Falco, Datadog Agent         |
+| System maintenance tasks | Disk cleaners, backups, etc. |
+| Networking               | CNI plugins (e.g., Calico)   |
+
+**DaemonSet Behavior:**
+
+ - When a new node joins, the DaemonSet automatically adds a pod to it.
+ - If a node is removed, its DaemonSet pod is cleaned up.
+ - You can restrict DaemonSet pods to run on a subset of nodes using:
+   - nodeSelector
+   - nodeAffinity
+   - taints and tolerations
+
+**Basic DaemonSet YAML Example:**
+```
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-monitor
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: node-monitor
+  template:
+    metadata:
+      labels:
+        name: node-monitor
+    spec:
+      containers:
+      - name: node-monitor
+        image: prom/node-exporter
+        ports:
+        - containerPort: 9100
+```
+`This ensures one node-monitor pod runs on every node`
+
+**Common kubectl Commands:**
+
+| Action                         | Command                                         |
+| ------------------------------ | ----------------------------------------------- |
+| Create from YAML               | `kubectl apply -f daemonset.yaml`               |
+| List DaemonSets                | `kubectl get daemonsets -A`                     |
+| Describe a DaemonSet           | `kubectl describe ds <name> -n <ns>`            |
+| Delete a DaemonSet             | `kubectl delete ds <name> -n <ns>`              |
+| View pods created by DaemonSet | `kubectl get pods -o wide -l name=node-monitor` |
+
+## Priority Classes:
+
+### What are Priority Classes in Kubernetes?
+
+PriorityClasses in Kubernetes determine the importance of a pod during scheduling and eviction.They are used to influence which pods get scheduled first and which get evicted first when cluster resources are scarce.
+
+### Why Use Priority Classes?
+ - Ensure critical system pods (e.g., DNS, logging) are not evicted.
+ - Let prod workloads run before dev/test pods.
+ - Implement tiered QoS (quality of service).
+
+**Key Concepts**
+
+| Term            | Meaning                                                                                    |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| `value`         | Integer that determines pod priority. Higher = more important.                             |
+| `globalDefault` | Whether this priority class is used by default when pods don’t specify one.                |
+| `preemption`    | Higher-priority pods can **preempt (evict)** lower-priority ones if resources are limited. |
+
+**Priority Value Guidelines:**
+
+<p align="center">
+  <img src="images/k8s-17.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+| Priority Class     | Example Value                       |
+| ------------------ | ----------------------------------- |
+| System-critical    | `>1000000000` (used by kube-system) |
+| Prod workloads     | `100000`                            |
+| Dev workloads      | `50000`                             |
+| Default (no class) | `0`                                 |
+
+<p align="center">
+  <img src="images/k8s-18.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Preemption Behavior**
+
+If a high-priority pod can’t be scheduled:
+- Kubernetes tries to evict lower-priority pods to free resources.
+- It uses PodDisruptionBudget and other policies to control eviction.
+
+**Effect of Pod Priority:**
+
+<p align="center">
+  <img src="images/k8s-19.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Default PriorityClass**
+
+You can create a default class used by all pods without explicitly setting priorityClassName:
+```
+globalDefault: true
+```
+
+**Note:** Only one PriorityClass in the cluster can have globalDefault: true
+
+**View Priority Classes:**
+```
+kubectl get priorityclasses
+kubectl describe priorityclass high-priority
+```
+**Example: Define a PriorityClass:**
+```
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 100000
+globalDefault: false
+description: "Used for production workloads"
+```
+**Use PriorityClass in a Pod/Deployment:**
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: prod-app
+spec:
+  priorityClassName: high-priority
+  containers:
+  - name: nginx
+    image: nginx
+```
+
