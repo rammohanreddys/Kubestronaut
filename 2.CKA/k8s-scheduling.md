@@ -1,6 +1,7 @@
 # K8S - Scheduling
 
 **Course Context:**
+
 - Mannual Scheduling Pods or No Scheduler
 - Labels, Selectors & Annotations
 - Taints & Tolerations
