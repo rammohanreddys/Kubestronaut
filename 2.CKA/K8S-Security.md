@@ -393,8 +393,74 @@ kubectl create clusterrolebinding \
 
 # 3. Kubeconfig:
 
+**What is kubeconfig in Kubernetes?**
 
+A kubeconfig file is a configuration file used by kubectl and other Kubernetes clients to connect to a Kubernetes cluster. It contains all the necessary details for authentication, authorization, and cluster endpoint access.
 
+<p align="center">
+  <img src="images/k8s-38.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**What’s Inside a kubeconfig?**
+
+It’s a YAML file that defines:
+| Section           | Description                                                        |
+| ----------------- | ------------------------------------------------------------------ |
+| `clusters`        | Information about Kubernetes API servers (name, endpoint, CA cert) |
+| `users`           | Credentials for accessing the cluster (tokens, client certs, etc.) |
+| `contexts`        | A named mapping of cluster + user combination                      |
+| `current-context` | The default context (`kubectl` uses this one unless overridden)    |
+
+<p align="center">
+  <img src="images/k8s-39.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Example kubeconfig File:**
+
+```
+apiVersion: v1
+kind: Config
+clusters:
+- name: dev-cluster
+  cluster:
+    server: https://192.168.0.10:6443
+    certificate-authority: /path/to/ca.crt
+
+users:
+- name: dev-user
+  user:
+    client-certificate: /path/to/dev-user.crt
+    client-key: /path/to/dev-user.key
+
+contexts:
+- name: dev-context
+  context:
+    cluster: dev-cluster
+    user: dev-user
+
+current-context: dev-context
+```
+
+We can update kubeconfig specific to namespace as well:
+
+<p align="center">
+  <img src="images/k8s-40.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**How Does kubectl Use kubeconfig?**
+
+When you run a kubectl command, it looks for the kubeconfig file in this order:
+* --kubeconfig flag (if specified)
+* $KUBECONFIG environment variable
+* Default location: ~/.kube/config
+
+**Common kubectl Commands with kubeconfig:**
+
+| Command                                 | Description            |
+| ----------------------------------------|------------------------|
+| `kubectl config current-context`        | View current context   |
+| `kubectl config use-context dev-context`| Switch context         |
+| `kubectl config get-contexts`           | View all contexts      |
 
 
 
