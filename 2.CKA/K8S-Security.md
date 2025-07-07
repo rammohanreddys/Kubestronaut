@@ -444,7 +444,7 @@ current-context: dev-context
 We can update kubeconfig specific to namespace as well:
 
 <p align="center">
-  <img src="images/k8s-40.JPG" alt="Description of my awesome image" width="600">
+  <img src="images/k8s-41.JPG" alt="Description of my awesome image" width="600">
 </p>
 
 **How Does kubectl Use kubeconfig?**
@@ -455,6 +455,10 @@ When you run a kubectl command, it looks for the kubeconfig file in this order:
 * Default location: ~/.kube/config
 
 **Common kubectl Commands with kubeconfig:**
+
+<p align="center">
+  <img src="images/k8s-40.JPG" alt="Description of my awesome image" width="600">
+</p>
 
 | Command                                 | Description            |
 | ----------------------------------------|------------------------|
