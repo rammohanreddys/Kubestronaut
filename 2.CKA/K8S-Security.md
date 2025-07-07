@@ -177,3 +177,7 @@ openssl x509 -req -in my-service.csr -signkey my-service.key -out my-service.crt
 Note: 
 1. We can have seperate CA for both kube-apiserver & etcd severs.
 
+Directory structure for manifests and certificates:
+<p align="center">
+  <img src="images/k8s-34.JPG" alt="Description of my awesome image" width="600">
+</p>
