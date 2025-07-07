@@ -5,7 +5,7 @@ Here's a clear and structured overview of the Kubernetes (K8s) security componen
 1. TLS Certificates - Everywhere
    1. SSL/TLS Basics
    2. Generate TLS certificates and configuration
-2. Certificates API
+2. K8S Certificates API 
 3. Kubeconfig
 4. API-Groups
 5. RBAC
@@ -274,7 +274,7 @@ openssl x509 '/etc/kubernetes/pki/apiserver.crt' -text -noout
   <img src="images/k8s-35.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-# 2. Certificates API:
+# 2. K8S Certificates API:
 
 The Kubernetes Certificates API is a built-in API for managing TLS certificates inside the cluster. It allows you to:
 - Request certificates (client or server)
@@ -390,6 +390,8 @@ kubectl create clusterrolebinding \
 - After a while (default: 1 year), kubelet renews the cert using:
   - signerName: kubernetes.io/kubelet-serving
 - Controller manager can approve this too (if enabled)
+
+# 3. Kubeconfig:
 
 
 
