@@ -150,3 +150,30 @@ Digital certificates serve as more than just containers for public keys. They pr
 * Validity dates
 * Subject Alternative Names (SANs) for multiple domain support
 
+### Generate TLS certificates for K8S:
+
+#### Generating a Server Certificate:
+
+1. Generate private key
+```
+openssl genrsa -out my-service.key 2048
+```
+2. Create a certificate signing request (CSR)
+```
+openssl req -new -key my-service.key -out my-service.csr -subj "/CN=my-service.my-namespace.svc"
+```
+3. Create a self-signed certificate (or send CSR to CA)
+```
+openssl x509 -req -in my-service.csr -signkey my-service.key -out my-service.crt -days 365
+```
+<p align="center">
+  <img src="images/k8s-33.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+<p align="center">
+  <img src="images/k8s-32.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+Note: 
+1. We can have seperate CA for both kube-apiserver & etcd severs.
+
