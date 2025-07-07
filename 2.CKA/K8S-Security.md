@@ -4,20 +4,19 @@ Here's a clear and structured overview of the Kubernetes (K8s) security componen
 
 1. TLS Certificates - Everywhere
    1. SSL/TLS Basics
-   2. Generate TLS certificates
-   3. 
-3. Certificates API
-4. Kubeconfig
-5. API-Groups
-6. RBAC
+   2. Generate TLS certificates and configuration
+2. Certificates API
+3. Kubeconfig
+4. API-Groups
+5. RBAC
    1. Cluster Role & Role Bindings
-7. Service Accounts
-8. Image Security
-9. Security Context
-10. Network Policies
-11. Custom Resource Definitions (CRD)
-12. Workload Security
-13. Third-party Tools & Enhancements
+6. Service Accounts
+7. Image Security
+8. Security Context
+9. Network Policies
+10. Custom Resource Definitions (CRD)
+11. Workload Security
+12. Third-party Tools & Enhancements
 
 # 1. TLS Certificates - Everywhere:
 
@@ -274,3 +273,128 @@ openssl x509 '/etc/kubernetes/pki/apiserver.crt' -text -noout
 <p align="center">
   <img src="images/k8s-35.JPG" alt="Description of my awesome image" width="600">
 </p>
+
+# 2. Certificates API:
+
+The Kubernetes Certificates API is a built-in API for managing TLS certificates inside the cluster. It allows you to:
+- Request certificates (client or server)
+- Approve or deny certificate requests
+- Sign CSRs (Certificate Signing Requests)
+- Fetch signed certificates
+
+<p align="center">
+  <img src="images/k8s-36.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**This API is commonly used to issue:**
+- Client certificates (e.g., for users or kubelets)
+- Certificates for internal workloads
+- Automatically rotated kubelet certs (via kubelet client certificate rotation)
+
+### 1. Generate Private Key and CSR
+```
+openssl genrsa -out user.key 2048
+openssl req -new -key user.key -out user.csr -subj "/CN=my-user/O=dev-team"
+```
+
+### 2. Create a CertificateSigningRequest (CSR) Object
+Base64 encode the CSR:
+```
+cat user.csr | base64 > base64_csr
+```
+Create a YAML file:
+```
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: my-user-csr
+spec:
+  request: <BASE64_CSR>
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+    - client auth
+```
+Then apply it:
+```
+kubectl apply -f csr.yaml
+```
+
+### 3. Approve the CSR
+```
+kubectl certificate approve my-user-csr
+```
+
+### 4. Get the Signed Certificate
+```
+kubectl get csr my-user-csr -o jsonpath='{.status.certificate}' | base64 --decode > user.crt
+```
+
+Now you have:
+- user.crt: Signed certificate
+- user.key: Private key
+You can use this for secure client authentication (e.g., via kubectl).
+
+### 5. What Is the Controller Manager's Role in CSR?
+
+Here's how the Kubernetes Controller Manager is involved in CSR signing and automatic approval, especially for kubelet certificate bootstrapping and rotation.
+The Kubernetes Controller Manager (kube-controller-manager) includes a certificate controller that:
+- Watches for CertificateSigningRequest (CSR) resources
+- Automatically approves or denies specific types of requests
+- Signs the CSRs using a Kubernetes signer (like for kubelets)
+
+#### Required Controller Manager Flags:
+
+To enable automatic CSR signing and approval, these flags must be set on the kube-controller-manager:
+```
+--cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt
+--cluster-signing-key-file=/etc/kubernetes/pki/ca.key
+--cluster-signing-duration=8760h
+```
+<p align="center">
+  <img src="images/k8s-37.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+#### Key Use Cases for Auto-Approval by Controller Manager
+
+| Use Case                             | Signer Name                                   | Automatically Approved? |
+| ------------------------------------ | --------------------------------------------- | ----------------------- |
+| Kubelet TLS bootstrap                | `kubernetes.io/kube-apiserver-client-kubelet` | ✅ Yes (if configured)   |
+| Kubelet serving certificate rotation | `kubernetes.io/kubelet-serving`               | ✅ Yes (if configured)   |
+
+#### Enabling Auto-Approval (Kubelet Bootstrap)
+
+Make sure:
+- Kubelets start with bootstrap credentials (--bootstrap-kubeconfig)
+- Controller Manager is running with required signer flags
+- A ClusterRoleBinding exists to allow bootstrap tokens to create CSRs
+
+```
+kubectl create clusterrolebinding \
+  kubelet-bootstrap \
+  --clusterrole=system:node-bootstrapper \
+  --group=system:bootstrappers
+```
+
+#### Kubelet CSR Workflow:
+
+1. Initial Bootstrap Certificate
+
+- Kubelet sends a CSR signed by its bootstrap token.
+- CSR has signerName: kubernetes.io/kube-apiserver-client-kubelet
+- Controller manager auto-approves and signs it if:
+  - The group is system:bootstrappers
+  - RBAC permits it
+
+2. Certificate Rotation
+
+- After a while (default: 1 year), kubelet renews the cert using:
+  - signerName: kubernetes.io/kubelet-serving
+- Controller manager can approve this too (if enabled)
+
+
+
+
+
+
+
+
