@@ -267,7 +267,9 @@ total 32
 - Certificate Common_Name
 - Expiry dates
 - SAN -Subject Alternative Names
-  `openssl x509 '*.crt' -text -noout
+```
+openssl x509 '/etc/kubernetes/pki/apiserver.crt' -text -noout
+```
   
 <p align="center">
   <img src="images/k8s-35.JPG" alt="Description of my awesome image" width="600">
