@@ -466,6 +466,95 @@ When you run a kubectl command, it looks for the kubeconfig file in this order:
 | `kubectl config use-context dev-context`| Switch context         |
 | `kubectl config get-contexts`           | View all contexts      |
 
+# 4. API-Groups: (Authentication)
+
+In Kubernetes, the API is organized into groups to version and structure different resources logically.
+
+Each Kubernetes resource (like Pods, Deployments, ConfigMaps, etc.) belongs to a specific API group and version.
+
+**Types of API Groups in Kubernetes:**
+
+| Type              | Description                            | Example Resources                           |
+| ----------------- | -------------------------------------- | ------------------------------------------- |
+| **Core Group**    | No API group name (legacy group)       | `Pod`, `Service`, `ConfigMap`, `Secret`     |
+| **Named Groups**  | Have a group name like `apps`, `batch` | `Deployment`, `Job`, `DaemonSet`, `Ingress` |
+| **Custom Groups** | For Custom Resource Definitions (CRDs) | `MyResource.mygroup.io`                     |
+
+<p align="center">
+  <img src="images/k8s-40.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Core Group:**
+
+Yaml Template:
+```
+apiVersion: v1
+kind: Pod
+```
+
+<p align="center">
+  <img src="images/k8s-40.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Named Group:**
+
+Yaml Template:
+```
+apiVersion: apps/v1
+kind: Deployment
+```
+
+<p align="center">
+  <img src="images/k8s-40.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+# 5. RBAC - Authorization:
+
+Once a user or service is authenticated, Kubernetes performs authorization to determine what actions they are allowed to perform.
+
+📌 Think of it like:
+
+- Authentication = Who are you?
+- Authorization = what actions/operations allowed to you to perform
+
+**How Authorization Works**
+
+- User makes a request (e.g., kubectl get pods)
+- Kubernetes authenticates the user (via certs, token, etc.)
+- Authorization checks:
+  - WHO is making the request?
+  - WHAT resource and verb are requested? (e.g., get pods)
+  - WHERE is the resource located? (namespace or cluster-wide)
+If permitted, request proceeds; else, it's denied with 403 Forbidden.
+
+**Built-in Authorization Modes:**
+
+Kubernetes supports multiple authorization modes (enabled via the --authorization-mode flag on the API server). You can use one or combine multiple modes.
+
+| Mode          | Description                                      |
+| ------------- | ------------------------------------------------ |
+| `Node`        | Authorizes kubelets to access specific resources |
+| `RBAC`        | Role-Based Access Control (**most common**) ✅    |
+| `ABAC`        | Attribute-Based Access Control (deprecated)      |
+| `Webhook`     | External service decides authorization           |
+| `AlwaysAllow` | Allows all requests (⚠️ insecure)                |
+| `AlwaysDeny`  | Denies all requests                              |
+
+**RBAC – Role-Based Access Control**
+
+RBAC uses roles and bindings to control access.
+
+**Key RBAC Resources:**
+ 
+| Resource             | Scope        | Purpose                                                     |
+| -------------------- | ------------ | ----------------------------------------------------------- |
+| `Role`               | Namespaced   | Defines allowed actions in a namespace                      |
+| `ClusterRole`        | Cluster-wide | Defines allowed actions across the cluster                  |
+| `RoleBinding`        | Namespaced   | Grants Role to users/groups/service accounts in a namespace |
+| `ClusterRoleBinding` | Cluster-wide | Grants ClusterRole access to users/groups/service accounts  |
+
+
+
 
 
 
