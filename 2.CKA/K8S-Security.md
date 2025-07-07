@@ -1,5 +1,19 @@
 # K8S Security
 
+Here's a clear and structured overview of the Kubernetes (K8s) security components, which help secure the cluster, nodes, workloads, and communication:
+
+1. TLS Certificates - Everywhere
+2. Certificates API
+3. Kubeconfig
+4. API-Groups
+5. RBAC
+   1. Cluster Role & Role Bindings
+6. Service Accounts
+7. Image Security
+8. Security Context
+9. Network Policies
+10. Custom Resource Definitions (CRD)
+
 ## SSL/TLS Basics:
 
 ### **What is a Secure Sockets Layer (SSL)?**
