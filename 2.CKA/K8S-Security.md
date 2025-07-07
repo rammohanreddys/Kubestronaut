@@ -177,7 +177,49 @@ openssl x509 -req -in my-service.csr -signkey my-service.key -out my-service.crt
 Note: 
 1. We can have seperate CA for both kube-apiserver & etcd severs.
 
-Directory structure for manifests and certificates:
+**Directory structure for manifests and certificates:**
+
+K8S-Manifests:
+```
+controlplane ~ ➜  ls -l  /etc/kubernetes/manifests/
+total 16
+-rw------- 1 root root 2577 Jul  7 14:23 etcd.yaml
+-rw------- 1 root root 3898 Jul  7 13:56 kube-apiserver.yaml
+-rw------- 1 root root 3394 Jul  7 13:56 kube-controller-manager.yaml
+-rw------- 1 root root 1656 Jul  7 13:56 kube-scheduler.yaml
+```
+K8S-Certificates:
+```
+controlplane ~ ➜  ls -l /etc/kubernetes/pki/
+total 60
+-rw-r--r-- 1 root root 1289 Jul  7 13:56 apiserver.crt
+-rw-r--r-- 1 root root 1123 Jul  7 13:56 apiserver-etcd-client.crt
+-rw------- 1 root root 1675 Jul  7 13:56 apiserver-etcd-client.key
+-rw------- 1 root root 1679 Jul  7 13:56 apiserver.key
+-rw-r--r-- 1 root root 1176 Jul  7 13:56 apiserver-kubelet-client.crt
+-rw------- 1 root root 1675 Jul  7 13:56 apiserver-kubelet-client.key
+-rw-r--r-- 1 root root 1107 Jul  7 13:56 ca.crt
+-rw------- 1 root root 1675 Jul  7 13:56 ca.key
+drwxr-xr-x 2 root root 4096 Jul  7 13:56 etcd
+-rw-r--r-- 1 root root 1123 Jul  7 13:56 front-proxy-ca.crt
+-rw------- 1 root root 1679 Jul  7 13:56 front-proxy-ca.key
+-rw-r--r-- 1 root root 1119 Jul  7 13:56 front-proxy-client.crt
+-rw------- 1 root root 1679 Jul  7 13:56 front-proxy-client.key
+-rw------- 1 root root 1679 Jul  7 13:56 sa.key
+-rw------- 1 root root  451 Jul  7 13:56 sa.pub
+
+controlplane ~ ➜  ls -l /etc/kubernetes/pki/etcd/
+total 32
+-rw-r--r-- 1 root root 1094 Jul  7 13:56 ca.crt
+-rw------- 1 root root 1679 Jul  7 13:56 ca.key
+-rw-r--r-- 1 root root 1123 Jul  7 13:56 healthcheck-client.crt
+-rw------- 1 root root 1679 Jul  7 13:56 healthcheck-client.key
+-rw-r--r-- 1 root root 1208 Jul  7 13:56 peer.crt
+-rw------- 1 root root 1679 Jul  7 13:56 peer.key
+-rw-r--r-- 1 root root 1208 Jul  7 13:56 server.crt
+-rw------- 1 root root 1679 Jul  7 13:56 server.key
+```
+
 <p align="center">
   <img src="images/k8s-34.JPG" alt="Description of my awesome image" width="600">
 </p>
