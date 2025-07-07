@@ -3,18 +3,21 @@
 Here's a clear and structured overview of the Kubernetes (K8s) security components, which help secure the cluster, nodes, workloads, and communication:
 
 1. TLS Certificates - Everywhere
-2. Certificates API
-3. Kubeconfig
-4. API-Groups
-5. RBAC
+   1. SSL/TLS Basics
+   2. Generate TLS certificates
+   3. 
+3. Certificates API
+4. Kubeconfig
+5. API-Groups
+6. RBAC
    1. Cluster Role & Role Bindings
-6. Service Accounts
-7. Image Security
-8. Security Context
-9. Network Policies
-10. Custom Resource Definitions (CRD)
-11. Workload Security
-12. Third-party Tools & Enhancements
+7. Service Accounts
+8. Image Security
+9. Security Context
+10. Network Policies
+11. Custom Resource Definitions (CRD)
+12. Workload Security
+13. Third-party Tools & Enhancements
 
 # 1. TLS Certificates - Everywhere:
 
@@ -24,7 +27,7 @@ TLS encrypts communication:
 - kube-proxy ↔ cluster
 - External HTTPS (Ingress)
 
-## SSL/TLS Basics:
+## 1. SSL/TLS Basics:
 
 ### **What is a Secure Sockets Layer (SSL)?**
 
@@ -257,4 +260,15 @@ total 32
     `docker logs <container_id>`
 - Verify the certificate configuration and point the right certificate or path if mismatched.
 ```
-   
+
+**To verify the below certificate details like:**
+
+- Certificate issuer common name
+- Certificate Common_Name
+- Expiry dates
+- SAN -Subject Alternative Names
+  `openssl x509 '*.crt' -text -noout
+  
+<p align="center">
+  <img src="images/k8s-35.JPG" alt="Description of my awesome image" width="600">
+</p>
