@@ -68,6 +68,9 @@ Purpose of the TLS/SSL Handshake:
 - Key Exchange:    Securely agree on a symmetric session key
 - Integrity:       Ensure message integrity via MAC or AEAD
 
+<p align="center">
+  <img src="images/k8s-27.JPG" alt="Description of my awesome image" width="600">
+</p>
 
 **Core SSL/TLS Terminology:**
 
@@ -120,4 +123,30 @@ Some of the examples of widely-used asymmetric encryption include:
 * Rivest Shamir Adleman (RSA),
 * Digital Signature Algorithm (DSA),
 * the Diffie-Hellman exchange method, and more.
+
+#### A Note on Key and Certificate Naming Conventions:
+
+* Certificates that include a public key typically use the extensions .crt or .pem (for example, server.crt, server.pem, client.crt, or client.pem). 
+* Private keys are usually indicated by the extension .key or may include the word “key” in the filename (e.g., server.key or server-key.pem). 
+Adhering to these naming conventions helps distinguish between public certificates and private keys.
+
+<p align="center">
+  <img src="images/k8s-31.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+<p align="center">
+  <img src="images/k8s-29.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+<p align="center">
+  <img src="images/k8s-30.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+#### The Role of Digital Certificates:
+
+Digital certificates serve as more than just containers for public keys. They provide essential details including:
+* Certificate owner's identity (subject)
+* Issuer’s identity
+* Validity dates
+* Subject Alternative Names (SANs) for multiple domain support
 
