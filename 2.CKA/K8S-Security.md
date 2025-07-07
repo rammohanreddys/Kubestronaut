@@ -16,6 +16,13 @@ Here's a clear and structured overview of the Kubernetes (K8s) security componen
 11. Workload Security
 12. Third-party Tools & Enhancements
 
+# 1. TLS Certificates - Everywhere:
+
+TLS encrypts communication:
+- API server ↔ kubelet
+- API server ↔ etcd
+- kube-proxy ↔ cluster
+- External HTTPS (Ingress)
 
 ## SSL/TLS Basics:
 
@@ -240,3 +247,14 @@ total 32
 <p align="center">
   <img src="images/k8s-34.JPG" alt="Description of my awesome image" width="600">
 </p>
+
+**Note:**
+```
+- If any authentication issues with kube-apiserver from kubectl or client or etcd
+  - check the container logs for each service
+    `docker ps -a|grep kube-apiserver`
+    `docker ps -a|grep etcd'
+    `docker logs <container_id>`
+- Verify the certificate configuration and point the right certificate or path if mismatched.
+```
+   
