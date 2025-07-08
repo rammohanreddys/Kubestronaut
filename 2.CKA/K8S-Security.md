@@ -8,9 +8,15 @@ Here's a clear and structured overview of the Kubernetes (K8s) security componen
 2. K8S Certificates API 
 3. Kubeconfig
 4. API-Groups
-5. RBAC
-   1. Cluster Role & Role Bindings
-6. Service Accounts
+5. Authorization
+   1. Node Authorization
+   2. ABAC Authorization
+   3. RBAC
+      - Role
+      - Role-Binding
+      - Cluster Role
+      - Cluster Role-Binding
+   4. Webhook
 7. Image Security
 8. Security Context
 9. Network Policies
