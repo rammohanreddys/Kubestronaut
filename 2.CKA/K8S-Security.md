@@ -655,6 +655,18 @@ A Forbidden error is returned because your Service Account hasn’t been assigne
   <img src="images/k8s-46.JPG" alt="Description of my awesome image" width="600">
 </p>
 
+### K8S Resource Scope:
+
+* Kubernetes resources can be classified as either namespaced or non-namespaced. 
+* You can use the kubectl api-resources command to obtain a list of resources available in the Kubernetes API, along with their namespace scope. 
+* To grant permissions to entities within a namespace, you can use Role. To grant permissions that span across the entire cluster, you can use ClusterRole. 
+* After defining these roles, you can bind them to specific entities using RoleBinding for Role and ClusterRoleBinding for ClusterRole.
+
+<p align="center">
+  <img src="images/k8s-54.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+
 ### Basic yaml template for Role:
 ```
 apiVersion: rbac.authorization.k8s.io/v1
@@ -736,6 +748,9 @@ Webhook authorization mode allows for custom authorization logic by delegating t
 
 **Important Kubectl commands with role & rolebinding:**
 ```
+kubectl api-resources                             # The kubectl api-resources command provides information about resources available in the Kubernetes API,
+                                                  # including whether they are namespaced or not.
+
 kubectl api-versions | grep rbac                  # Check whether RBAC is enabled
 kube-apiserver --authorization-mode=RBAC          # To manually enable RBAC support
 kubectl get roles                                 # list the roles
