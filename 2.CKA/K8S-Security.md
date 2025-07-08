@@ -1,4 +1,4 @@
-# K8S Security
+![image](https://github.com/user-attachments/assets/76e71219-01ad-4acb-aebf-aba9c636edc7)# K8S Security
 
 Here's a clear and structured overview of the Kubernetes (K8s) security components, which help secure the cluster, nodes, workloads, and communication:
 
@@ -481,7 +481,7 @@ Each Kubernetes resource (like Pods, Deployments, ConfigMaps, etc.) belongs to a
 | **Custom Groups** | For Custom Resource Definitions (CRDs) | `MyResource.mygroup.io`                     |
 
 <p align="center">
-  <img src="images/k8s-40.JPG" alt="Description of my awesome image" width="600">
+  <img src="images/k8s-47.JPG" alt="Description of my awesome image" width="600">
 </p>
 
 **Core Group:**
@@ -493,7 +493,7 @@ kind: Pod
 ```
 
 <p align="center">
-  <img src="images/k8s-40.JPG" alt="Description of my awesome image" width="600">
+  <img src="images/k8s-43.JPG" alt="Description of my awesome image" width="600">
 </p>
 
 **Named Group:**
@@ -505,7 +505,7 @@ kind: Deployment
 ```
 
 <p align="center">
-  <img src="images/k8s-40.JPG" alt="Description of my awesome image" width="600">
+  <img src="images/k8s-44.JPG" alt="Description of my awesome image" width="600">
 </p>
 
 # 5. RBAC - Authorization:
@@ -531,6 +531,10 @@ If permitted, request proceeds; else, it's denied with 403 Forbidden.
 
 Kubernetes supports multiple authorization modes (enabled via the --authorization-mode flag on the API server). You can use one or combine multiple modes.
 
+<p align="center">
+  <img src="images/k8s-48.JPG" alt="Description of my awesome image" width="600">
+</p>
+
 | Mode          | Description                                      |
 | ------------- | ------------------------------------------------ |
 | `Node`        | Authorizes kubelets to access specific resources |
@@ -540,9 +544,60 @@ Kubernetes supports multiple authorization modes (enabled via the --authorizatio
 | `AlwaysAllow` | Allows all requests (⚠️ insecure)                |
 | `AlwaysDeny`  | Denies all requests                              |
 
-**RBAC – Role-Based Access Control**
+**How Authorization mode works with the Flag:**
+
+<p align="center">
+  <img src="images/k8s-49.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Request Flow Example:**
+
+1. A request (e.g., kubectl delete pod) is received.
+2. Kubernetes tries:
+   - Node mode → if it's a node-initiated action (e.g., kubelet logs a pod) → allow/deny.
+   - If not allowed, then tries:
+   - RBAC → does the subject have a matching Role/ClusterRole? → allow/deny.
+   - If not allowed, then tries:
+   - Webhook → sends request data to external webhook → allow/deny.
+3. If none say "allow" → ❌ request is denied.
+
+## Node Authorization:
+
+```
+In a Kubernetes cluster, each node runs a kubelet process that communicates with the Kubernetes API server
+to manage pods and containers running on that node. The kubelet process is responsible for reporting the
+status of the node and its containers, and for executing commands and pulling images from the container registry.
+```
+
+* Node Authorization is a specific type of authorization mode in Kubernetes that is used to authorize API requests made by kubelets. It is not intended for user authorization.
+* To be authorized by the Node authorizer, a kubelet must use a credential that identifies it as a member of the system:nodes group and has a specific username format of system:node:<nodeName>.
+* Therefore, when a kubelet makes an API request to the Kubernetes API server, it includes this TLS certificate as part of its credentials, along with the system:node:<nodeName> username and system:nodes group.
+* The Node authorizer verifies these credentials to ensure that the kubelet is authorized to make the requested API call.
+
+<p align="center">
+  <img src="images/k8s-50.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+## ABAC - Attribute Based Authorization Control:
+
+Attribute-Based Access Control (ABAC) uses attributes to determine if a user or process has access to a resource. This policies consist of rules that match attributes in a user’s request with attributes in the policy.
+
+<p align="center">
+  <img src="images/k8s-51.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Note:**
+However, managing and updating ABAC policies can become complex, especially as the number of policies and attributes increase. This can lead to potential difficulties in maintaining the system over time.
+
+## RBAC – Role-Based Access Control
+
+RBAC (Role-Based Access Control) is the most common and flexible way to manage permissions in Kubernetes. It allows you to define who (users, groups, service accounts) can do what (verbs) on which resources.
 
 RBAC uses roles and bindings to control access.
+
+<p align="center">
+  <img src="images/k8s-52.JPG" alt="Description of my awesome image" width="600">
+</p>
 
 **Key RBAC Resources:**
  
@@ -553,9 +608,141 @@ RBAC uses roles and bindings to control access.
 | `RoleBinding`        | Namespaced   | Grants Role to users/groups/service accounts in a namespace |
 | `ClusterRoleBinding` | Cluster-wide | Grants ClusterRole access to users/groups/service accounts  |
 
+**Common Verbs (Actions):**
+```
+verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+```
+**Common Resources:**
+```
+resources: ["pods", "deployments", "services", "secrets", "configmaps"]
+```
+
+Before setting up RBAC, it’s important to understand the Kubernetes user model. There are two ways to create “users” depending on the type of access that’s required:
+
+**User vs ServiceAccount in Kubernetes:**
+
+In Kubernetes, User and ServiceAccount are both subjects that can be granted permissions via RBAC. However, they serve different purposes and behave differently.
+
+| Feature             | **User**                           | **ServiceAccount**                   |
+| ------------------- | ---------------------------------- | ------------------------------------ |
+| **Definition**      | External identity (human)          | Internal identity (for pods/tasks)   |
+| **Created in K8s?** | ❌ No (not stored in K8s)           | ✅ Yes (API object)                   |
+| **Usage**           | Used by humans (kubectl, CI/CD)    | Used by apps/pods inside the cluster |
+| **Authentication**  | TLS client certs, tokens, OIDC     | Auto-mounted token in pod            |
+| **Managed By**      | Admin or external IdP (e.g., OIDC) | Kubernetes                           |
+| **RBAC Bindings**   | RoleBinding/ClusterRoleBinding     | RoleBinding/ClusterRoleBinding       |
+| **Example Names**   | `john`, `devops@example.com`       | `system:serviceaccount:<ns>:<name>`  |
+
+**Important Kubectl commands with role & rolebinding:**
+```
+kubectl api-versions | grep rbac                  # Check whether RBAC is enabled
+kube-apiserver --authorization-mode=RBAC          # To manually enable RBAC support
+kubectl get roles                                 # list the roles
+kubectl get rolebindings                          # list the rolebindigs
+kubectl describe role <role-name>                 # to check details of role
+kubectl dcesribe rolebinding <role-binding-name>  # to check the details pf role-binding
+kubectl auth can-i create deployments -n default  # To check whether user has permission to create deployment
+kubectl auth can-i delete nodes                   # To check whether use has permisson to delete nodes
+```
+### Verify step by step access with user/service account access to perform any operations on the cluster:
+
+```
+## Create a Service Account
+## You need to create a Service Account to use in the next steps. You’ll bind the Role you create to this Service Account:
+kubectl create serviceaccount demo-user
+
+## Next, run the following command to create an authorization token for your Service Account:
+## The token’s value will now be saved to the $TOKEN environment variable in your terminal.
+TOKEN=$(kubectl create token demo-user)
+
+## Configure kubectl with your Service Account
+kubectl config set-credentials demo-user --token=$TOKEN
+
+## Next, add your new context—we’re calling it demo-user-context. Reference your new demo-user credential and your current Kubernetes cluster. (We’re using the default cluster, but you should change this value if you’re connected to a differently named cluster.)
+
+kubectl config set-context demo-user-context --cluster=default --user=demo-user
+
+## Before switching to your new context, first check the name of your current context
+kubectl config current-context
+kubectl config use-context demo-user-context
+
+## Try to list the Pods in the namespace:
+$ kubectl get pods
+Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:default:demo-user" cannot list resource "pods" in API group "" in the namespace "default"
+
+A Forbidden error is returned because your Service Account hasn’t been assigned any RBAC roles that include the get pods permission.
+```
+
+<p align="center">
+  <img src="images/k8s-46.JPG" alt="Description of my awesome image" width="600">
+</p>
 
 
+### Basic yaml template for Role:
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: dev        # Role is restricted to the 'dev' namespace
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+```
 
+`kubectl apply -f role.yaml`
+
+### Basic yaml template for Role-Binding:
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: <rolebinding-name>          # e.g., read-pods
+  namespace: <namespace-name>       # e.g., dev
+subjects:
+- kind: <User|Group|ServiceAccount> # Choose one: User / Group / ServiceAccount
+  name: <subject-name>              # e.g., alice or default
+  namespace: <subject-namespace>    # Only for ServiceAccounts
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role                        # Must match the bound role type (Role or ClusterRole)
+  name: <role-name>                 # e.g., pod-reader
+  apiGroup: rbac.authorization.k8s.io
+```
+
+`kubectl apply -f role-binding.yaml`
+
+###  Basic yaml template for Cluster Role:
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: read-all-pods
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+```
+`kubectl apply -f cluster-role.yaml`
+
+###  Basic yaml template for Cluster Role-Binding:
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: bind-read-all-pods
+subjects:
+- kind: User                      # or ServiceAccount / Group
+  name: alice                     # username or service account name
+  namespace: dev                  # only for ServiceAccounts
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: read-all-pods
+  apiGroup: rbac.authorization.k8s.io
+```
+`kubectl apply -f cluster-rolebinding.yaml`
 
 
 
