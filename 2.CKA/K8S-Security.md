@@ -606,6 +606,17 @@ verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 resources: ["pods", "deployments", "services", "secrets", "configmaps"]
 ```
 
+### K8S Resource Scope:
+
+* Kubernetes resources can be classified as either namespaced or non-namespaced. 
+* You can use the kubectl api-resources command to obtain a list of resources available in the Kubernetes API, along with their namespace scope. 
+* To grant permissions to entities within a namespace, you can use Role. To grant permissions that span across the entire cluster, you can use ClusterRole. 
+* After defining these roles, you can bind them to specific entities using RoleBinding for Role and ClusterRoleBinding for ClusterRole.
+
+<p align="center">
+  <img src="images/k8s-54.JPG" alt="Description of my awesome image" width="600">
+</p>
+
 Before setting up RBAC, it’s important to understand the Kubernetes user model. There are two ways to create “users” depending on the type of access that’s required:
 
 **User vs ServiceAccount in Kubernetes:**
@@ -650,23 +661,6 @@ Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:de
 
 A Forbidden error is returned because your Service Account hasn’t been assigned any RBAC roles that include the get pods permission.
 ```
-
-<p align="center">
-  <img src="images/k8s-46.JPG" alt="Description of my awesome image" width="600">
-</p>
-
-### K8S Resource Scope:
-
-* Kubernetes resources can be classified as either namespaced or non-namespaced. 
-* You can use the kubectl api-resources command to obtain a list of resources available in the Kubernetes API, along with their namespace scope. 
-* To grant permissions to entities within a namespace, you can use Role. To grant permissions that span across the entire cluster, you can use ClusterRole. 
-* After defining these roles, you can bind them to specific entities using RoleBinding for Role and ClusterRoleBinding for ClusterRole.
-
-<p align="center">
-  <img src="images/k8s-54.JPG" alt="Description of my awesome image" width="600">
-</p>
-
-
 ### Basic yaml template for Role:
 ```
 apiVersion: rbac.authorization.k8s.io/v1
@@ -699,6 +693,9 @@ roleRef:
   name: <role-name>                 # e.g., pod-reader
   apiGroup: rbac.authorization.k8s.io
 ```
+<p align="center">
+  <img src="images/k8s-46.JPG" alt="Description of my awesome image" width="600">
+</p>
 
 `kubectl apply -f role-binding.yaml`
 
@@ -733,6 +730,10 @@ roleRef:
 ```
 `kubectl apply -f cluster-rolebinding.yaml`
 
+<p align="center">
+  <img src="images/k8s-55.JPG" alt="Description of my awesome image" width="600">
+</p>
+
 ## Webhook Authrization:
 
 Webhook authorization mode allows for custom authorization logic by delegating the authorization decision to an external HTTP service, known as a webhook.
@@ -744,7 +745,6 @@ Webhook authorization mode allows for custom authorization logic by delegating t
 <p align="center">
   <img src="images/k8s-53.JPG" alt="Description of my awesome image" width="600">
 </p>
-
 
 **Important Kubectl commands with role & rolebinding:**
 ```
