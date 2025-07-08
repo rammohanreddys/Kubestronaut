@@ -42,7 +42,7 @@ Core Concepts:
 The Kubernetes cluster architecture is divided into two main segments:
 
 <p align="center">
-  <img src="images/k8s-1.JPG" alt="Description of my awesome image" width="600">
+  <img src="images/k8s-01.JPG" alt="Description of my awesome image" width="600">
 </p>
 
 |Component Category |Key Components|Description
