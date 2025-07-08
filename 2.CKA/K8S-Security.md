@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/76e71219-01ad-4acb-aebf-aba9c636edc7)# K8S Security
+# K8S Security
 
 Here's a clear and structured overview of the Kubernetes (K8s) security components, which help secure the cluster, nodes, workloads, and communication:
 
@@ -508,7 +508,7 @@ kind: Deployment
   <img src="images/k8s-44.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-# 5. RBAC - Authorization:
+# 5. Authorization:
 
 Once a user or service is authenticated, Kubernetes performs authorization to determine what actions they are allowed to perform.
 
@@ -543,23 +543,6 @@ Kubernetes supports multiple authorization modes (enabled via the --authorizatio
 | `Webhook`     | External service decides authorization           |
 | `AlwaysAllow` | Allows all requests (⚠️ insecure)                |
 | `AlwaysDeny`  | Denies all requests                              |
-
-**How Authorization mode works with the Flag:**
-
-<p align="center">
-  <img src="images/k8s-49.JPG" alt="Description of my awesome image" width="600">
-</p>
-
-**Request Flow Example:**
-
-1. A request (e.g., kubectl delete pod) is received.
-2. Kubernetes tries:
-   - Node mode → if it's a node-initiated action (e.g., kubelet logs a pod) → allow/deny.
-   - If not allowed, then tries:
-   - RBAC → does the subject have a matching Role/ClusterRole? → allow/deny.
-   - If not allowed, then tries:
-   - Webhook → sends request data to external webhook → allow/deny.
-3. If none say "allow" → ❌ request is denied.
 
 ## Node Authorization:
 
@@ -633,17 +616,6 @@ In Kubernetes, User and ServiceAccount are both subjects that can be granted per
 | **RBAC Bindings**   | RoleBinding/ClusterRoleBinding     | RoleBinding/ClusterRoleBinding       |
 | **Example Names**   | `john`, `devops@example.com`       | `system:serviceaccount:<ns>:<name>`  |
 
-**Important Kubectl commands with role & rolebinding:**
-```
-kubectl api-versions | grep rbac                  # Check whether RBAC is enabled
-kube-apiserver --authorization-mode=RBAC          # To manually enable RBAC support
-kubectl get roles                                 # list the roles
-kubectl get rolebindings                          # list the rolebindigs
-kubectl describe role <role-name>                 # to check details of role
-kubectl dcesribe rolebinding <role-binding-name>  # to check the details pf role-binding
-kubectl auth can-i create deployments -n default  # To check whether user has permission to create deployment
-kubectl auth can-i delete nodes                   # To check whether use has permisson to delete nodes
-```
 ### Verify step by step access with user/service account access to perform any operations on the cluster:
 
 ```
@@ -676,7 +648,6 @@ A Forbidden error is returned because your Service Account hasn’t been assigne
 <p align="center">
   <img src="images/k8s-46.JPG" alt="Description of my awesome image" width="600">
 </p>
-
 
 ### Basic yaml template for Role:
 ```
@@ -744,5 +715,49 @@ roleRef:
 ```
 `kubectl apply -f cluster-rolebinding.yaml`
 
+## Webhook Authrization:
 
+Webhook authorization mode allows for custom authorization logic by delegating the authorization decision to an external HTTP service, known as a webhook.
+
+* When a user or process sends a request to the Kubernetes API server, the server sends a webhook authorization request to the external authorizer. 
+* The authorizer evaluates the request against the defined policies and sends a callback response indicating whether the request is authorized or not.
+* This enables Kubernetes administrators to implement complex and customized authorization rules specific to their organization’s needs using any external system for making authorization decisions, such as an LDAP or Active Directory server, a database, or custom code.
+
+<p align="center">
+  <img src="images/k8s-53.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+
+**Important Kubectl commands with role & rolebinding:**
+```
+kubectl api-versions | grep rbac                  # Check whether RBAC is enabled
+kube-apiserver --authorization-mode=RBAC          # To manually enable RBAC support
+kubectl get roles                                 # list the roles
+kubectl get rolebindings                          # list the rolebindigs
+kubectl describe role <role-name>                 # to check details of role
+kubectl dcesribe rolebinding <role-binding-name>  # to check the details pf role-binding
+kubectl auth can-i create deployments -n default  # To check whether user has permission to create deployment
+kubectl auth can-i delete nodes                   # To check whether use has permisson to delete nodes
+```
+### Configure Authorization Modes:
+
+1. Edit the kube-apiserver.yaml configuration file located at /etc/kubernetes/manifests/kube-apiserver.yaml
+2. Add the desired authorization mode to the --authorization-mode flag, separating multiple modes with commas.
+
+**How Multi Authorization mode works with the Flag:**
+
+<p align="center">
+  <img src="images/k8s-49.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Request Flow Example:**
+
+1. A request (e.g., kubectl delete pod) is received.
+2. Kubernetes tries:
+   - Node mode → if it's a node-initiated action (e.g., kubelet logs a pod) → allow/deny.
+   - If not allowed, then tries:
+   - RBAC → does the subject have a matching Role/ClusterRole? → allow/deny.
+   - If not allowed, then tries:
+   - Webhook → sends request data to external webhook → allow/deny.
+3. If none say "allow" → ❌ request is denied.
 
