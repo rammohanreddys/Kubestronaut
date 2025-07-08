@@ -761,3 +761,6 @@ kubectl auth can-i delete nodes                   # To check whether use has per
    - Webhook → sends request data to external webhook → allow/deny.
 3. If none say "allow" → ❌ request is denied.
 
+**Note:**
+
+Multiple Authorization Modes allows cluster administrators to use more than one authorization mode to secure access to Kubernetes resources. When a user makes a request to the Kubernetes API server, each authorization mode is evaluated in order until one of them successfully authorizes or denies the request. If all modes fail, the request is denied.
