@@ -769,4 +769,5 @@ kubectl auth can-i delete nodes                   # To check whether use has per
 
 **Note:**
 
-Multiple Authorization Modes allows cluster administrators to use more than one authorization mode to secure access to Kubernetes resources. When a user makes a request to the Kubernetes API server, each authorization mode is evaluated in order until one of them successfully authorizes or denies the request. If all modes fail, the request is denied.
+* Multiple Authorization Modes allows cluster administrators to use more than one authorization mode to secure access to Kubernetes resources. 
+* When a user makes a request to the Kubernetes API server, each authorization mode is evaluated in order until one of them successfully authorizes or denies the request. If all modes fail, the request is denied.
