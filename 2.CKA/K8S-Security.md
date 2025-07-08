@@ -865,3 +865,98 @@ spec:
       - name: private-reg-cred
 
 ```
+
+# 7. Security Context:
+
+* Kubernetes security contexts define runtime security settings for pods or containers. 
+* If no security context is specified, Kubernetes applies a default one, which may not meet requirements. 
+* You can add securityContext field in the pod manifest file to set up security contexts at the pod or container level. 
+* Pod-level settings inherited by all containers and container-level settings only applying to that container. 
+* Container-level settings always override pod-level settings. 
+* The capabilities field adds specific capabilities to a container’s security context at the container level, not possible at the pod level.
+
+<p align="center">
+  <img src="images/k8s-57.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+## Specify Security Context at the Pod Level:
+
+In this example, the securityContext field has been defined at the Pod level with the runAsUser and fsGroup properties set to 1000 and 2000 respectively. Therefore, both containers will run as the user with UID 1000 and have access to the group with GID 2000.
+
+<p align="center">
+  <img src="images/k8s-58.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+Yaml example:
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 2000
+  containers:
+  - name: container1
+    image: nginx
+  - name: container2
+    image: busybox
+```
+
+## Specify Security Context at the Container Level:
+
+securityContext specified at the container level only apply to the individual container, not to other containers in the pod.
+
+In this example, each container in the pod has its own security context specified with the securityContext field. The runAsUser field is specified with a different value for each container. container1 runs with user ID 1000, while container2 runs with user ID 2000, and there is no inheritance or sharing of the security context between the two containers.
+
+<p align="center">
+  <img src="images/k8s-59.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+pod.yaml
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+  - name: container1
+    image: nginx
+    securityContext:
+      runAsUser: 1000
+  - name: container2
+    image: busybox
+    securityContext:
+      runAsUser: 2000
+```
+
+## Specify Security Context at the Pod and Container Level:
+
+securityContext sets at the container level always override those set at the pod level.
+
+In this example, the pod-level securityContext sets the runAsUser value to 1000, while the container-level securityContext sets the runAsUser value to 2000, which overrides the pod-level security context. This means that the container will run with the user ID of 2000, regardless of the pod-level setting.
+
+<p align="center">
+  <img src="images/k8s-60.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+pod.yaml
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  securityContext:
+    runAsUser: 1000
+  containers:
+  - name: my-container
+    image: my-image
+    securityContext:
+      runAsUser: 2000
+```
+
+
+
