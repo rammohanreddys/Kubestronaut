@@ -20,9 +20,6 @@ Here's a clear and structured overview of the Kubernetes (K8s) security componen
 6. Image Security
 7. Security Context
 8. Network Policies
-9. Custom Resource Definitions (CRD)
-10. Workload Security
-11. Third-party Tools & Enhancements
 
 ## 1. TLS Certificates - Everywhere:
 
