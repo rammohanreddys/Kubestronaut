@@ -17,12 +17,12 @@ Here's a clear and structured overview of the Kubernetes (K8s) security componen
       - Cluster Role
       - Cluster Role-Binding
    4. Webhook
-7. Image Security
-8. Security Context
-9. Network Policies
-10. Custom Resource Definitions (CRD)
-11. Workload Security
-12. Third-party Tools & Enhancements
+6. Image Security
+7. Security Context
+8. Network Policies
+9. Custom Resource Definitions (CRD)
+10. Workload Security
+11. Third-party Tools & Enhancements
 
 # 1. TLS Certificates - Everywhere:
 
@@ -786,3 +786,82 @@ kubectl auth can-i delete nodes                   # To check whether use has per
 
 * Multiple Authorization Modes allows cluster administrators to use more than one authorization mode to secure access to Kubernetes resources. 
 * When a user makes a request to the Kubernetes API server, each authorization mode is evaluated in order until one of them successfully authorizes or denies the request. If all modes fail, the request is denied.
+
+# 6. Image Security:
+
+Securing container images in Kubernetes is critical to prevent vulnerabilities, malware, and supply chain attacks from being introduced into your clusters.
+
+<p align="center">
+  <img src="images/k8s-56.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+## Kubernetes Image Security Best Practices:
+
+1. Use Trusted Base Images
+   - Start with official or verified base images (e.g., from Docker Hub, distroless, Alpine).
+   - Avoid using latest tag; use pinned versions like nginx:1.21.1.
+
+2. Scan Images for Vulnerabilities
+   - Use image scanning tools to detect known vulnerabilities:
+   
+3. Enforce Image Policies (Admission Controls)/ Use tools to restrict which images can run:
+   - Kubernetes-native options: OPA/Gatekeeper: Define policies like:
+   
+4. Enable Image Signing & Verification
+   
+5. Use Private/Authenticated Image Registries
+   - Store sensitive or internal images in private registries.
+   - Configure imagePullSecrets in Kubernetes to securely access them
+   ```
+   imagePullSecrets:
+   - name: regcred
+   ```
+   
+6. Limit Pod Permissions
+   - Run containers as non-root wherever possible.
+   - Use PodSecurityPolicies (deprecated) or Pod Security Admission:
+     - Enforce that images run with least privilege.
+     ```
+     securityContext:
+       runAsNonRoot: true
+       allowPrivilegeEscalation: false
+     ```
+     
+7. Block Dangerous Images: Use a validating webhook or Kyverno/OPA to block:
+   - Images from unknown registries
+   - Images using latest
+   - Unscanned or unsigned images
+
+### Create an image pull secret to apply on deployment configuration:
+```
+kubectl create secret docker-registry private-reg-cred \
+  --docker-server=myprivateregistry.com:5000 \
+  --docker-username=dock_user \
+  --docker-password=dock_password \
+  --docker-email=dock_user@myprivateregistry.com
+```
+
+### Apply the configuration in deployment:
+
+`kubectl edir deployment <deployment-name>`
+
+```
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: web
+    spec:
+      containers:
+      - image: myprivateregistry.com:5000/nginx:alpine
+        imagePullPolicy: IfNotPresent
+        name: nginx
+      imagePullSecrets:
+      - name: private-reg-cred
+
+```
