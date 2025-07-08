@@ -24,7 +24,7 @@ Here's a clear and structured overview of the Kubernetes (K8s) security componen
 10. Workload Security
 11. Third-party Tools & Enhancements
 
-# 1. TLS Certificates - Everywhere:
+## 1. TLS Certificates - Everywhere:
 
 TLS encrypts communication:
 - API server ↔ kubelet
@@ -32,7 +32,7 @@ TLS encrypts communication:
 - kube-proxy ↔ cluster
 - External HTTPS (Ingress)
 
-## 1. SSL/TLS Basics:
+### 1. SSL/TLS Basics:
 
 ### **What is a Secure Sockets Layer (SSL)?**
 
@@ -280,7 +280,7 @@ openssl x509 '/etc/kubernetes/pki/apiserver.crt' -text -noout
   <img src="images/k8s-35.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-# 2. K8S Certificates API:
+## 2. K8S Certificates API:
 
 The Kubernetes Certificates API is a built-in API for managing TLS certificates inside the cluster. It allows you to:
 - Request certificates (client or server)
@@ -397,7 +397,7 @@ kubectl create clusterrolebinding \
   - signerName: kubernetes.io/kubelet-serving
 - Controller manager can approve this too (if enabled)
 
-# 3. Kubeconfig:
+## 3. Kubeconfig:
 
 **What is kubeconfig in Kubernetes?**
 
@@ -472,7 +472,7 @@ When you run a kubectl command, it looks for the kubeconfig file in this order:
 | `kubectl config use-context dev-context`| Switch context         |
 | `kubectl config get-contexts`           | View all contexts      |
 
-# 4. API-Groups: (Authentication)
+## 4. API-Groups: (Authentication)
 
 In Kubernetes, the API is organized into groups to version and structure different resources logically.
 
@@ -514,7 +514,7 @@ kind: Deployment
   <img src="images/k8s-44.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-# 5. Authorization:
+## 5. Authorization:
 
 Once a user or service is authenticated, Kubernetes performs authorization to determine what actions they are allowed to perform.
 
@@ -550,7 +550,7 @@ Kubernetes supports multiple authorization modes (enabled via the --authorizatio
 | `AlwaysAllow` | Allows all requests (⚠️ insecure)                |
 | `AlwaysDeny`  | Denies all requests                              |
 
-## Node Authorization:
+### Node Authorization:
 
 ```
 In a Kubernetes cluster, each node runs a kubelet process that communicates with the Kubernetes API server
@@ -567,7 +567,7 @@ status of the node and its containers, and for executing commands and pulling im
   <img src="images/k8s-50.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-## ABAC - Attribute Based Authorization Control:
+### ABAC - Attribute Based Authorization Control:
 
 Attribute-Based Access Control (ABAC) uses attributes to determine if a user or process has access to a resource. This policies consist of rules that match attributes in a user’s request with attributes in the policy.
 
@@ -578,7 +578,7 @@ Attribute-Based Access Control (ABAC) uses attributes to determine if a user or 
 **Note:**
 However, managing and updating ABAC policies can become complex, especially as the number of policies and attributes increase. This can lead to potential difficulties in maintaining the system over time.
 
-## RBAC – Role-Based Access Control
+### RBAC – Role-Based Access Control
 
 RBAC (Role-Based Access Control) is the most common and flexible way to manage permissions in Kubernetes. It allows you to define who (users, groups, service accounts) can do what (verbs) on which resources.
 
@@ -633,7 +633,7 @@ In Kubernetes, User and ServiceAccount are both subjects that can be granted per
 | **RBAC Bindings**   | RoleBinding/ClusterRoleBinding     | RoleBinding/ClusterRoleBinding       |
 | **Example Names**   | `john`, `devops@example.com`       | `system:serviceaccount:<ns>:<name>`  |
 
-### Verify step by step access with user/service account access to perform any operations on the cluster:
+#### Verify step by step access with user/service account access to perform any operations on the cluster:
 
 ```
 ## Create a Service Account
@@ -661,7 +661,7 @@ Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:de
 
 A Forbidden error is returned because your Service Account hasn’t been assigned any RBAC roles that include the get pods permission.
 ```
-### Basic yaml template for Role:
+#### Basic yaml template for Role:
 ```
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -676,7 +676,7 @@ rules:
 
 `kubectl apply -f role.yaml`
 
-### Basic yaml template for Role-Binding:
+#### Basic yaml template for Role-Binding:
 ```
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -699,7 +699,7 @@ roleRef:
 
 `kubectl apply -f role-binding.yaml`
 
-###  Basic yaml template for Cluster Role:
+####  Basic yaml template for Cluster Role:
 ```
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -712,7 +712,7 @@ rules:
 ```
 `kubectl apply -f cluster-role.yaml`
 
-###  Basic yaml template for Cluster Role-Binding:
+####  Basic yaml template for Cluster Role-Binding:
 ```
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -734,7 +734,7 @@ roleRef:
   <img src="images/k8s-55.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-## Webhook Authrization:
+### Webhook Authrization:
 
 Webhook authorization mode allows for custom authorization logic by delegating the authorization decision to an external HTTP service, known as a webhook.
 
@@ -787,7 +787,7 @@ kubectl auth can-i delete nodes                   # To check whether use has per
 * Multiple Authorization Modes allows cluster administrators to use more than one authorization mode to secure access to Kubernetes resources. 
 * When a user makes a request to the Kubernetes API server, each authorization mode is evaluated in order until one of them successfully authorizes or denies the request. If all modes fail, the request is denied.
 
-# 6. Image Security:
+## 6. Image Security:
 
 Securing container images in Kubernetes is critical to prevent vulnerabilities, malware, and supply chain attacks from being introduced into your clusters.
 
@@ -795,7 +795,7 @@ Securing container images in Kubernetes is critical to prevent vulnerabilities, 
   <img src="images/k8s-56.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-## Kubernetes Image Security Best Practices:
+### Kubernetes Image Security Best Practices:
 
 1. Use Trusted Base Images
    - Start with official or verified base images (e.g., from Docker Hub, distroless, Alpine).
@@ -866,7 +866,7 @@ spec:
 
 ```
 
-# 7. Security Context:
+## 7. Security Context:
 
 * Kubernetes security contexts define runtime security settings for pods or containers. 
 * If no security context is specified, Kubernetes applies a default one, which may not meet requirements. 
@@ -879,7 +879,7 @@ spec:
   <img src="images/k8s-57.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-## Specify Security Context at the Pod Level:
+### Specify Security Context at the Pod Level:
 
 In this example, the securityContext field has been defined at the Pod level with the runAsUser and fsGroup properties set to 1000 and 2000 respectively. Therefore, both containers will run as the user with UID 1000 and have access to the group with GID 2000.
 
@@ -904,7 +904,7 @@ spec:
     image: busybox
 ```
 
-## Specify Security Context at the Container Level:
+### Specify Security Context at the Container Level:
 
 securityContext specified at the container level only apply to the individual container, not to other containers in the pod.
 
@@ -932,7 +932,7 @@ spec:
       runAsUser: 2000
 ```
 
-## Specify Security Context at the Pod and Container Level:
+### Specify Security Context at the Pod and Container Level:
 
 securityContext sets at the container level always override those set at the pod level.
 
@@ -957,6 +957,75 @@ spec:
     securityContext:
       runAsUser: 2000
 ```
+## 8. Network Policies:
+
+NetworkPolicy is a Kubernetes object that enables the creation of policies to restrict the communication between pods and external entities in a namespace, using various factors like IP addresses, ports, protocols, and labels. 
+
+* The ingress section defines incoming traffic rules while the egress section defines outgoing traffic rules.
+* NetworkPolicy uses podSelector to select pods based on their labels, namespaceSelector to select pods in particular namespaces, and ipBlock to specify IP address blocks allowed or denied access to pods.
+
+### Ingress and Egress Traffic:
+
+<p align="center">
+  <img src="images/k8s-61.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Ingress traffic** refers to the incoming network traffic that is directed to a pod or a group of pods in the Kubernetes cluster. For example, if a user outside the cluster sends a request to a pod within the cluster, the traffic would be considered ingress traffic to that pod.
+
+**Egress traffic**, on the other hand, refers to the outgoing network traffic from a pod or a group of pods in the Kubernetes cluster. For example, if a pod in the cluster sends a request to a service or an external endpoint outside the cluster, the traffic would be considered egress traffic from that pod.
+
+**Note:**
+
+* By default, Kubernetes clusters allow unrestricted communication between pods and external access, which can pose security risks, especially in multi-tenant environments where multiple applications and teams coexist.
+* It's like a firewall for pods — by default, all traffic is allowed, but once a policy is applied, traffic is denied unless explicitly allowed.
+
+```
+$ kubectl api-resources|grep networkpolicies
+NAME             SHORTNAMES   APIVERSION            NAMESPACED  KIND
+networkpolicies  netpol       networking.k8s.io/v1  true        NetworkPolicy
+```
+
+### NetworkPolicy with podSelector:
+
+The podSelector field selects pods based on their labels and determines which pods the policy applies to.
+
+<p align="center">
+  <img src="images/k8s-62.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+In this case, this NetworkPolicy targets pods labeled with name: backend. The ingress section defines incoming traffic rules from name: frontend pods on port 8080. The egress section defines outgoing traffic rules to name: database pods on port 5432.
+
+### NetworkPolicy with namespaceSelector:
+
+namespaceSelector is a field that allows you to select particular namespaces and apply network policy rules to all the pods within those namespaces.
+
+<p align="center">
+  <img src="images/k8s-63.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+<p align="center">
+  <img src="images/k8s-64.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+In this case, it allows traffic from the pods in namespace1.
+
+### NetworkPolicy with ipBlock:
+
+ipBlock is a field used to specify IP address blocks that are allowed to access or denied access to the pod. It can be used to define a CIDR block or a single IP address.
+
+<p align="center">
+  <img src="images/k8s-65.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+In this example, the ipBlock field is used to specify the CIDR block 192.168.0.0/16. The ingress section allows incoming traffic to the pod on port 8080 using the TCP protocol only if the source IP address is within this CIDR block.
+
+
+
+
+
+
+
+
 
 
 
