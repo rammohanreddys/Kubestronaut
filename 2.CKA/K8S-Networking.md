@@ -13,6 +13,7 @@
    * Ingress
    * K8S API Gateway
 
+# 1. Linux Network Basics:
 
 ## Linux Networking: Switching, Routing and Gateway:
 
@@ -337,7 +338,44 @@ A bridge is a software device that connects multiple network interfaces together
   <img src="images/k8s-90.JPG" alt="Description of my awesome image" width="600">
 </p>
 
+# 2. K8S Networking:
 
+## Container Network Interface (CNI):
+
+In Kubernetes, each Pod is assigned a unique IP address and can communicate with other Pods without requiring NAT. To provide networking to Pods, Kubernetes uses Container Network Interface (CNI), a library for configuring network interfaces in Linux containers. The kubelet is responsible for setting up the network for new Pods using the CNI plugin specified in the configuration file located in the /etc/cni/net.d/ directory on the node.
+
+**Pod Networking**
+
+Base on the Kubernetes network model, the key concepts for Pod networking in Kubernetes include:
+
+* Each Pod has a unique cluster-wide IP address.
+* Pods can communicate with all other Pods across nodes without NAT.
+* Agents on a node can communicate with all Pods on that node.
+
+**Container Network Interface(CNI)**
+
+Container Network Interface(CNI) is a specification and library for configuring network interfaces in Linux containers. In Kubernetes, CNI is the standard way to provide networking to pods.
+
+The main purpose of CNI is to allow different networking plugins to be used with container runtimes. This allows Kubernetes to be flexible and work with different networking solutions, such as Calico, Flannel, and Weave Net. CNI plugins are responsible for configuring network interfaces in pods, such as setting IP addresses, configuring routing, and managing network security policies.
+
+**Kubelet and CNI: Managing Networks for Pods**:
+
+<p align="center">
+  <img src="images/k8s-91.JPG" alt="Description of my awesome image" width="600">
+</p>
+<p align="center">
+  <img src="images/k8s-92.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+In Kubernetes, the kubelet is responsible for setting up the network for a new Pod using the CNI plugin specified in the network configuration file located in the /etc/cni/net.d/ directory on the node. This configuration file contains necessary parameters to configure the network for the Pod.
+
+The required CNI plugins referenced by the configuration should be installed in the /opt/cni/bin directory, which is the directory used by Kubernetes to store the CNI plugin binaries that manage network connectivity for Pods.
+
+When a pod is created, the kubelet reads the network configuration file and identifies the CNI plugin specified in the file. The kubelet then loads the CNI plugin and invokes its “ADD” command with the Pod’s network configuration parameters. The CNI plugin takes over and creates a network namespace, configures the network interface, and sets up routing and firewall rules based on the configuration parameters provided by the kubelet. The kubelet saves the actual network configuration parameters used by the CNI plugin in a file in the Pod’s network namespace, located in the /var/run/netns/ directory on the node.
+
+Finally, the kubelet notifies the container runtime, such as Docker, that the network is ready for the Pod to start.
+
+## Weave Net CNI Plugin:
 
 
 
