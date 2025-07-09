@@ -363,6 +363,9 @@ The main purpose of CNI is to allow different networking plugins to be used with
 <p align="center">
   <img src="images/k8s-91.JPG" alt="Description of my awesome image" width="600">
 </p>
+<p align="center">
+  <img src="images/k8s-92.JPG" alt="Description of my awesome image" width="600">
+</p>
 
 In Kubernetes, the kubelet is responsible for setting up the network for a new Pod using the CNI plugin specified in the network configuration file located in the /etc/cni/net.d/ directory on the node. This configuration file contains necessary parameters to configure the network for the Pod.
 
