@@ -26,12 +26,14 @@ kubectl run busybox --image=busybox:latest --labels="account=finance"
 | `--it`                              | Runs interactively with a TTY (good for debugging).                                                       |
 | `-- sleep 60`                       | Runs the `sleep 60` command in the container.                                                             |
 
-####Not valid for pod creation, only for deployment, replicaset #######
 
 | Part                                | Explanation                                                                                               |
 | ------------------------------------| --------------------------------------------------------------------------------------------------------- |
 | `--requests='cpu=100m,memory=256Mi'`|	Resource requests                                                                                         |
 | `--limits='cpu=200m,memory=512Mi'`	| Resource limits                                                                                           |
 
+**Note:**
+* requests/limits are Not valid options for pod creation, only for deployment, replicaset.
+* we can use --overrides option
 
 
