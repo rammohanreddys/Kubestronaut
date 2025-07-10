@@ -40,4 +40,9 @@ kubectl run busybox --image=busybox:latest --labels='env=test' -n engineering
 2. Get list of all pods showing name and namespace with jsonpath expression
 
 ```
-kubectl get pods -o=jsonpath="{range .items[*]['metadata.name', 'metadata.namespace'}{ \n} { end }]"
+kubectl get pods -o=jsonpath="{.items[*]['metadata.name', 'metadata.namespace']}"
+```
+<p align="center">
+  <img src="images/test-01.JPG" alt="Description of my awesome image" width="600">
+</p>
+
