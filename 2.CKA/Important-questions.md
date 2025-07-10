@@ -11,6 +11,7 @@ kubectl run busybox --image=busybox:latest -o yaml > pod.yaml
 kubectl run busybox --image=busybox:latest --rm --it -- sleep 6000
 kubectl run busybox --image=busybox:latest --command sleep 6000
 kubectl run busybox --image=busybox:latest --labels="account=finance"
+kubectl run busybox --image=busybox:latest --labels='env=test' -n engineering
 ```
 **Options:**
 
@@ -36,4 +37,7 @@ kubectl run busybox --image=busybox:latest --labels="account=finance"
 * requests/limits are Not valid options for pod creation, only for deployment, replicaset.
 * we can use --overrides option
 
+2. Get list of all pods showing name and namespace with jsonpath expression
 
+```
+kubectl get pods -o=jsonpath="{range .items[*]['metadata.name', 'metadata.namespace'}{ \n} { end }]"
