@@ -54,4 +54,8 @@ my-chart/
 |helm rollback release-name 1 | Roolback to Previous version|
 |helm uninstall rlease-name   | Uninstall the application|
 
-**Note:** You can find impportant commands here: https://github.com/rammohanreddys/Kubestronaut/blob/feature-learning/2.CKA/Documents/Helm-cheat-sheet-by-PhoenixNAP.pdf
+**Note:** 
+
+You can find impportant commands here: 
+
+https://github.com/rammohanreddys/Kubestronaut/blob/feature-learning/2.CKA/Documents/Helm-cheat-sheet-by-PhoenixNAP.pdf
