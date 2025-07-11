@@ -37,6 +37,11 @@ kubectl run busybox --image=busybox:latest --labels='env=test' -n engineering
 * requests/limits are Not valid options for pod creation, only for deployment, replicaset.
 * we can use --overrides option
 
+2. How to create a ingress with all possible options with imperative model:
+
+
+
+
 1. Printing container env variables to a file "envpod":
    ```
    kubectl run busybox --image=busybox:latest --restart=Never --rm --it -- env > envpod
