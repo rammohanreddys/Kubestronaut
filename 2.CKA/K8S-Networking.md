@@ -377,6 +377,52 @@ Finally, the kubelet notifies the container runtime, such as Docker, that the ne
 
 ## Weave Net CNI Plugin:
 
+Weave Net is a CNI plugin that creates a virtual network for Kubernetes clusters. It installs a Weave Net container on each node, creating a virtual switch for containers. If a packet is sent to a container on the same node, it is routed through the virtual switch. 
+
+However, if the packet is sent to a container on a different node, it is sent to the Weave Net container on the local node, encapsulated in a VXLAN header, and then sent to the Weave Net container on the destination node. The destination Weave Net container then decapsulates the packet and sends it to the destination container.
+
+### How Weave Net’s CNI Plugin Works at a High Level:
+
+Weave Net is a popular CNI plugin that provides a simple and flexible network for Kubernetes clusters. Weave Net creates a virtual network that spans all nodes in the cluster, allowing containers to communicate with each other within and across hosts, without requiring any manual configuration.
+
+Here’s a step-by-step explanation of how Weave Net sets up agents on each node and sends packets across different nodes:
+
+1. Weave Net installs a daemonset on each node in the cluster. The daemonset creates a Weave Net container that runs alongside other containers on the node.
+2. When the Weave Net container starts up, it creates a virtual network interface on the host system, which acts as a virtual switch for the containers on the node.
+3. When a pod is created on the node, the kubelet invokes the Weave Net CNI plugin to configure the network for the pod.
+4. The Weave Net plugin creates a virtual interface for the pod, and configures it to use the virtual switch created by the Weave Net container.
+
+<p align="center">
+  <img src="images/k8s-94.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+Send a packet to another container on the same node:
+1. When a container in the pod sends a packet to another container on the same node, the packet is routed through the virtual switch.
+
+<p align="center">
+  <img src="images/k8s-95.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+Send a packet to another container on a different node:
+
+1. When a container in the pod sends a packet to a container on a different node, the packet is sent to the Weave Net container on the local node.
+2. The Weave Net container encapsulates the packet in a VXLAN header, which is used to tunnel the packet across the virtual network.
+3. The Weave Net container sends the encapsulated packet to the Weave Net container on the destination node.
+4. The destination Weave Net container decapsulates the packet, and sends it to the destination container.
+5. The destination container receives the packet, and can send a response back to the source container in a similar fashion.
+
+<p align="center">
+  <img src="images/k8s-96.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+<p align="center">
+  <img src="images/k8s-97.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+<p align="center">
+  <img src="images/k8s-98.JPG" alt="Description of my awesome image" width="600">
+</p>
+
 
 
 
