@@ -62,4 +62,10 @@ kubectl get pods -o=jsonpath="{.items[*]['metadata.name','metadata.namespace']}"
   <img src="images/test-01.JPG" alt="Description of my awesome image" width="600">
 </p>
 
-4. F  
+4. From the pod lable **name=cpu-utilizer**, find pods running high cou workloads and write the name of the pod consumeing most CPU to the file **sample.txt**
+```
+kubectl top pods -A -l name=cpu-utilizer
+```
+<p align="center">
+  <img src="images/test-06.JPG" alt="Description of my awesome image" width="600">
+</p>
