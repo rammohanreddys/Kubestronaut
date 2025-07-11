@@ -703,6 +703,246 @@ spec:
               number: <port2>
 ```
 
+## K8S API Gateway:
+
+What Is The Gateway API?
+
+The Kubernetes Gateway API is a specification that standardizes how traffic routing is managed within Kubernetes clusters. It was created by the Kubernetes SIG-NETWORK group as a more flexible and powerful alternative to the limitations of the Ingress API. The Gateway API makes it easier to handle things like ingress, load balancing, service discovery, and traffic routing, and it integrates well with Kubernetes’ native resources, such as Services and Endpoints. While Kubernetes doesn’t offer a default implementation, there are several popular open-source and commercial tools, like Istio and Envoy Gateway, that support the Gateway API.
+
+**The Gateway API consists of three main components:**
+
+* **GatewayClass:** Think of this as a template or a blueprint for setting up Gateways. It defines a group of Gateways that share the same configuration and are managed by a controller that follows the specifications of the class.
+* **Gateway:** This is where the traffic handling happens. A Gateway is like an entry point to your cluster, such as a cloud load balancer, that directs incoming traffic to the appropriate destinations based on your configuration.
+* **HTTPRoute:** This is where you set the rules for how HTTP traffic gets routed. It helps map traffic from the Gateway to your backend services, such as those running in Kubernetes Pods, based on things like URL paths, headers, or hosts.
+Together, these components provide a structured and flexible way to manage traffic flow and routing in a Kubernetes environment.
+
+**How The Gateway API Works**
+
+So far, we’ve covered what the Kubernetes Gateway API is, why it’s essential, and its key components. Now, let’s dive into how it works, giving you a clearer understanding of its functionality.
+
+Here is a logical breakdown of each of its components and how it works:
+
+<p align="center">
+  <img src="images/k8s-110.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**The Gateway Controller**:
+
+Similar to the Ingress Controller, the Gateway Controller is the central component that manages all Gateway resources. It is responsible for ensuring that the configurations defined in Gateway resources are implemented correctly. The Gateway Controller listens for changes in the Gateway, GatewayClass, and Route objects, then updates the network configuration accordingly to handle incoming traffic as defined. This enables the Kubernetes cluster to react to changes in routing configurations and manage traffic efficiently.
+
+**The GatewayClass**:
+
+The GatewayClass defines the behavior and configuration of Gateways in your cluster. Think of it as a template or blueprint for your Gateway resources. It specifies which controller will manage the Gateway (this could be an open-source solution like Istio or a custom implementation). The GatewayClass also contains configurations like IP pools and resource limits. The infrastructure provider is responsible for defining and managing the GatewayClass.
+
+Here is an example code snippet of a GatewayClass:
+```
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: example-gatewayclass
+spec:
+  controller: example.com/gateway-controller
+```
+This defines a GatewayClass named example-gatewayclass. It specifies the controller (example.com/gateway-controller) responsible for managing this Gateway.
+
+**Gateway**:
+
+Once the GatewayClass is defined, you can create a Gateway object based on it. The Gateway object is created based on a specific GatewayClass. It defines how traffic enters the cluster and which listeners will handle the traffic (e.g., HTTP, HTTPS). A single Gateway can handle traffic for multiple applications, and these applications can share the same Gateway while still maintaining their own routing rules.
+
+Here is an example code snippet of a Gateway:
+```
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: example-gateway
+spec:
+  gatewayClassName: example-gatewayclass
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+```
+This defines a Gateway named example-gateway, which uses the previously created example-gatewayclass. It listens on port 80 using the HTTP protocol to handle incoming traffic.
+
+**HTTPRoute**:
+
+After setting up the Gateway, you define HTTPRoutes (or other route types, like TCPRoute) to specify how traffic should be forwarded to the services in your cluster. HTTPRoute objects define rules for routing HTTP traffic, such as matching paths, headers, or other HTTP attributes. The HTTPRoute object essentially acts as the set of instructions for how the Gateway should direct incoming traffic to specific applications or services in the Kubernetes cluster.
+
+Here is an example of how HTTPRoute is configured:
+```
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: example-httproute
+spec:
+  hosts:
+    - "example.com"
+  rules:
+    - matches:
+        - path:
+            type: Prefix
+            value: /app
+      forwardTo:
+        - serviceName: app-service
+          port: 80
+```
+This defines an HTTPRoute named example-httproute, which listens for requests to example.com. It forwards requests with the path /app to the app-service on port 80.
+
+These components work together to make it easier to manage traffic routing in Kubernetes. They give teams more control over how network traffic flows and how security is handled. The system is designed so that different teams like infrastructure providers, cluster operators, and application developers can work together smoothly without interfering with each other’s tasks.
+
+**Installing and Using the Gateway API:**
+
+<p align="center">
+  <img src="images/k8s-111.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+Step 1: Install the Gateway API CRDs
+```
+### First, install the Gateway API Custom Resource Definitions (CRDs) in our cluster:
+kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml
+
+### Verify the installation:
+kubectl get crds | grep gateway
+```
+Step 2: Deploy a Gateway Controller
+
+The Gateway API doesn’t come with a built-in controller. You can use an existing one like Istio, Kong, or Envoy Gateway. For example, to install the Istio Gateway Controller, run:
+```
+istioctl install –set profile=default
+
+kubectl apply -f https://github.com/istio/istio/releases/latest/download/gateway.yaml`
+```
+
+Step 3: Define a GatewayClass
+The GatewayClass defines how gateways should behave, similar to an IngressClass.
+```
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: my-gateway-class
+spec:
+  controllerName: istio.io/gateway-controller
+```
+
+`kubectl apply -f gatewayclass.yaml`
+
+Step 4: Create a Gateway
+The Gateway is the actual network entry point handling traffic.
+
+```
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ecommerce-gateway
+spec:
+  gatewayClassName: my-gateway-class
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+```
+
+`kubectl apply -f gateway.yaml`
+
+Step 5: Define HTTP Routes
+* Routes define how incoming requests are forwarded to backend services.
+* Routes define how incoming requests are forwarded to backend services.
+
+```
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: frontend-to-backend
+spec:
+  parentRefs:
+  - name: ecommerce-gateway
+  rules:
+  - matches:
+    - path:
+        type: Prefix
+        value: "/api"
+    backendRefs:
+    - name: backend-service
+      port: 8080
+```
+
+`kubectl apply -f httproute.yaml`
+
+Step 6: Deploy Frontend and Backend Services
+For simplicity, deploy a basic frontend and backend.
+
+Frontend Service:
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+```
+
+Backend Service:
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+```
+
+```
+kubectl apply -f frontend-service.yaml
+kubectl apply -f backend-service.yaml
+```
+
+Step 7: Test the Setup
+Retrieve the external IP of your Gateway:
+```
+kubectl get gateway ecommerce-gateway
+```
+
+Send a request - `curl http://<GATEWAY-IP>/api`
+
+If everything is set up correctly, the request should be routed to the backend service.
+
+**Gateway API vs. Kubernetes Ingress:**
+
+Now that we have a clear understanding of how the Gateway API works, let’s explore the key differences between Gateway API and Kubernetes Ingress, both of which are used for traffic management in Kubernetes.
+
+|Feature|Gateway API|Ingress|
+|-------|-----------|-------|
+|Protocol Support|Supports more protocols like gRPC, HTTP/2, and WebSockets, enabling complex traffic management.|Primarily supports HTTP and HTTPS traffic.|
+|Routing Complexity|Allows complex routing, including weighted traffic splitting and advanced rules for different services and protocols.	|Supports basic routing rules for HTTP/HTTPS traffic.|
+|Ease of Management|Makes it easy for cluster operators to create and manage multiple Gateway classes, deploy new gateways, and test configurations before production deployment.|Ingress is simpler but lacks the advanced features for managing multiple gateways or complex configurations.|
+|Extensibility|More extensible with the ability to define new protocols and routing rules, making it suitable for complex networking scenarios.|Limited extensibility, primarily focused on HTTP-based use cases.|
+|Use Case|Ideal for managing complex networking scenarios and multiple services with diverse requirements.|Best suited for simpler applications with basic HTTP/HTTPS routing needs.|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
