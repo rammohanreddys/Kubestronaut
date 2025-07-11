@@ -527,6 +527,80 @@ Ex:
 
 The top-level domain name for the cluster is specified as “cluster.local” in the Kubernetes plugin configuration. The plugin is also configured to handle reverse DNS lookups for IPv4 and IPv6 addresses using the in-addr.arpa and ip6.arpa domains.
 
+## Service Networking:
+
+* In Kubernetes, Service networking is handled by kube-proxy. 
+* Kube-proxy routes traffic to the appropriate pods based on the service’s selector. 
+* It operates in three different modes: userspace, iptables(by default), and IPVS. 
+* You can use the service-cluster-ip-range parameter in the kube-apiserver manifest to assign a specific IP address range to services. 
+* The NAT table includes rules that map the service’s virtual IP address to the IP addresses of the pods that support the service. 
+* Each node in the cluster has its own NAT table that is configured by kube-proxy.
+
+
+In Kubernetes, pod networking is handled by kubelet using CNI, while service networking is managed by kube-proxy. It’s important to note that services are not created or assigned to individual nodes, but are a cluster-wide concept. Kube-proxy routes traffic to the correct pods based on the service’s selector.
+
+<p align="center">
+  <img src="images/k8s-103.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+The following section will explore how kube-proxy handles service networking in Kubernetes.
+
+**The Role of Kube-Proxy in Service Networking**:
+
+In Kubernetes, services provide a stable network endpoint to connect to a set of pods. Kube-proxy handles the routing and load-balancing of client requests to the pods behind the service. It runs on each node in the cluster, watches the Kubernetes API server for changes in the service and endpoints objects, and configures the networking rules on each node based on the selected mode of operation (userspace, iptables, or IPVS).
+
+**Kube-proxy modes**:
+
+Kube-proxy has three distinct modes of operation:
+
+<p align="center">
+  <img src="images/k8s-104.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+* **userspace:** kube-proxy creates a userspace program that listens on a port and handles traffic.
+* **iptables:** kube-proxy creates iptables rules to forward traffic to the appropriate endpoints.
+* **IPVS:** kube-proxy uses the IP Virtual Server (IPVS) kernel module to handle traffic.
+
+If the mode is not explicitly set, the default mode of operation is iptables. To change the mode, use the kube-proxy command with the --proxy-modeoption followed by the desired mode:
+```
+$ kube-proxy --proxy-mode=[userspace|iptables|ipvs]
+```
+**Predefine Service IP Range**:
+
+To assign a specific IP address range to services in the Kubernetes cluster, we can use the service-cluster-ip-range parameter in the kube-apiserver manifest. This configuration file is usually located at /etc/kubernetes/manifests/kube-apiserver.yaml.
+
+<p align="center">
+  <img src="images/k8s-105.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+```
+--service-cluster-ip-range=<IP address>/<subnet mask>
+```
+
+By setting the service-cluster-ip-range, Kubernetes will allocate service IP addresses from within that range for any newly created services.
+
+For example, if you want to set the service IP address range to 172.16.0.0/16, you can add the following line to the kube-apiserver manifest:
+```
+--service-cluster-ip-range=172.16.0.0/16
+```
+
+**Note:**
+
+`It is important to note that Pods and Services should not share the same IP address.`
+
+**Kube-proxy in iptables mode and the NAT table**:
+
+In iptables mode, kube-proxy uses the NAT(Network Address Translation) table to load-balance and route incoming traffic by creating rules in the NAT table on each node. The DNAT(Destination Network Address Translation) rule translates the request’s destination IP address to a backend pod’s IP address, and the SNAT(Source Network Address Translation) rule translates the response’s source IP address back to the service IP address, ensuring that the response is sent back to the original client.
+
+<p align="center">
+  <img src="images/k8s-106.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+You can view the contents of the NAT table in the iptables firewall configuration by running the command:
+```
+$ iptables -L -t nat
+```
+
 
 
 
