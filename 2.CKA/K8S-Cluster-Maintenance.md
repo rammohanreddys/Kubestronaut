@@ -1,6 +1,56 @@
 # K8S Cluster Maintenance:
 
-## Manage Nodes with drain, cordon, and uncordon Commands:
+## 1. Key Areas of Kubernetes Cluster Maintenance:
+
+1. Node Maintenance
+2. Kubernetes Version Upgrade ( Control plane & worker nodes)
+3. Etcd Backup and Restore
+4. Resource Cleanup
+   - Delete unused:
+     - Namespaces
+     - Old ReplicaSets / Deployments
+     - Orphaned PVs / PVCs
+     - Unused ConfigMaps / Secrets
+     - Completed or Failed Pods
+5. Certificate Management
+6. Monitoring & Logging
+   - Monitor:
+     - Node/Pod CPU, Memory, Disk
+     - Network I/O
+     - Pod restarts or crashes
+     - API server performance
+7. Security Maintenance
+   - Rotate credentials regularly (kubeconfig, secrets, service account tokens).
+   - Update images with security patches.
+     - Network Policies
+     - PodSecurity Standards / OPA Gatekeeper
+     - Admission controllers
+     - RBAC audit
+8. Backup Strategy
+    - Regularly back up:
+      - etcd data
+      - Kubernetes manifests
+      - Application data (via Velero or restic, for example)
+      - Secrets and ConfigMaps
+9. Cluster Autoscaler & Node Group Management
+   - Review:
+     - Auto-scaling configurations
+     - Spot/preemptible nodes health
+     - Resource requests and limits
+10. Audit and Logging
+    - Enable and review:
+      - Audit logs
+      - Kube-apiserver logs
+      - RBAC usage
+      - Failed auth attempts
+11. Test and Validate
+    - Regularly run:
+      - kubectl get componentstatuses
+      - kubectl get nodes, kubectl top nodes/pods
+      - Liveness/Readiness probes
+      - Disaster recovery drills (backup restore tests)
+
+## 2. Manage Nodes with drain, cordon, and uncordon Commands:
 
 The drain, cordon, and uncordon commands are used in Kubernetes to manage nodes during maintenance or to temporarily take them offline. The drain command is used to gracefully remove a node from service by evicting all pods running on that node, scheduling them onto other available nodes and preventing new pods from being scheduled. The cordon command is used to temporarily disable scheduling new pods on a node, while allowing existing pods to continue running until they complete. The uncordon enables the scheduling of new pods onto a previously drained or cordoned node. These commands help ensure that workloads are safely migrated and prevent disruption to end-users during maintenance.
 
@@ -43,7 +93,7 @@ The uncordon command is used to reverse the effects of cordon and mark a previou
 </p>
 
 
-## Kubernetes: Kubeadm Cluster Upgrade Workflow:
+## 3. Kubernetes: Kubeadm Cluster Upgrade Workflow:
 
 Upgrade Control Plane Nodes:
 
