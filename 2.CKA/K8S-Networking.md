@@ -601,6 +601,107 @@ You can view the contents of the NAT table in the iptables firewall configuratio
 $ iptables -L -t nat
 ```
 
+## K8S - Ingress:
+
+`Kubernetes Ingress allows external access to services within a cluster by following traffic direction rules defined in Ingress resources. Ingress controllers implement these rules by configuring the underlying load balancer or reverse proxy. Note that Ingress controller is not built-in in Kubernetes. Ingress can be compared to a restaurant entrance, with Ingress resources acting as a seating chart and Ingress controller as a host managing traffic flow.`
+
+**Ingress**:
+
+Ingress is an API object that allows you to expose HTTP and HTTPS routes from outside the cluster to services within the cluster. It acts as a gateway between external traffic and the services running inside the cluster. The Ingress controller is responsible for implementing the routing rules defined in the Ingress resource by configuring the underlying load balancer or reverse proxy. With Ingress, you can define routing rules, SSL certificates, and load balancing policies for effective traffic management.
+
+Without Ingress, external traffic routing to Kubernetes services can be challenging. Managing services with a separate Service object is impractical for larger deployments. Ingress provides a centralized and flexible approach to manage external access to services, allowing more efficient and granular traffic routing
+
+<p align="center">
+  <img src="images/k8s-107.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Ingress Resources**:
+
+Ingress resources are a set of rules that define how incoming traffic should be directed to backend services. These rules can include path-based and hostname-based routing, as well as TLS termination. The backend services can be Kubernetes services or external services.
+
+<p align="center">
+  <img src="images/k8s-108.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+**Ingress Controller**:
+
+Ingress controller is a separate software component responsible for implementing the rules defined in the Ingress configuration. It automatically configures the underlying load balancer or reverse proxy to route traffic to the appropriate services by monitoring changes in the Ingress API object.
+
+It’s important to note that this controller is not built-in to Kubernetes by default. Instead, users can choose from several open-source ingress controllers, such as NGINX, Traefik, and Istio, to customize their Kubernetes cluster according to their needs.
+
+<p align="center">
+  <img src="images/k8s-109.JPG" alt="Description of my awesome image" width="600">
+</p>
+
+* Ingress can be compared to the main entrance of a restaurant, where customers come in and out. Similarly, Ingress is the main entry point to a Kubernetes cluster where external traffic is routed to the appropriate services and pods.
+
+* Ingress resources can be compared to the seating chart at a restaurant. Just as the seating chart determines where customers are assigned to sit based on various rules (e.g. party size, reservations, etc.), Ingress resources define the rules that specify how incoming traffic should be routed to the appropriate backend services and pods in a Kubernetes cluster.
+
+* Ingress controller acts like a restaurant host or hostess who manages the flow of customers and ensures they are properly seated at their respective tables based on a seating chart. Similarly, Ingress controller manages the flow of incoming traffic and routes it to the appropriate backend services based on the rules defined in the Ingress resources.
+
+```
+$ kubectl api-resources
+NAME        SHORTNAMES   APIVERSION             NAMESPACED   KIND
+ingresses   ing          networking.k8s.io/v1   true         Ingress
+```
+Ingress with YAML:
+
+1. path-based routing
+```
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: <Ingress_name>
+spec:
+  rules:
+  - host: <hostname>
+    http:
+      paths:
+      - path: <path1>   
+        pathType: Prefix
+        backend:
+          service:
+            name: <service1_name>
+            port:
+              number: <port1>
+      - path: <path2>     
+        pathType: Prefix
+        backend:
+          service:
+            name: <service2_name>
+            port:
+              number: <port2>
+```
+ 
+2. hostname-based routing
+```
+ apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: <Ingress_name>
+spec:
+  rules:
+  - host: <service1_domain>
+    http:
+      paths:
+      - path: <path1>
+        pathType: Prefix
+        backend:
+          service:
+            name: <service1_name>
+            port:
+              number: <port1>
+  - host: <service2_domain>
+    http:
+      paths:
+      - path: <path2>
+        pathType: Prefix
+        backend:
+          service:
+            name: <service2_name>
+            port:
+              number: <port2>
+```
 
 
 
