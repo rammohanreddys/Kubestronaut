@@ -12,29 +12,41 @@ KCNA - latest curriculum you can find here: [KCNA](https://github.com/cncf/curri
  |Cloud Native Observability                     |        8     |
  |Cloud Navtive Application Delivery             |        8     |
 
- # Kubernetes Fundamentals
- * Kubernetes Resources
- * Kubernetes Architecture
- * Kubernetes API
- * Containers
- * Scheduling
+**KCNA COURSE CONTEXT:**
 
-# Container Orchestration
-1. Container Orchestration Fundamentals
-2. Runtime
-3. Security
-4. Networking
-5. Service Mesh
-6. Storage
+1. Kubernetes Fundamentals
+    * Kubernetes Resources
+    * Kubernetes Architecture
+    * Kubernetes API
+    * Containers
+    * Scheduling
 
-# Cloud Native Architecture
-1. Cloud Native Architecture Fundamentals
-2. Autoscaling
-3. Serverless
-4. Community & Governance
-5. Personas
-6. Open Standards
+2. Container Orchestration
+    * Container Orchestration Fundamentals
+    * Runtime
+    * Security
+    * Networking
+    * Service Mesh
+    * Storage
 
+3. Cloud Native Architecture
+    * Cloud Native Architecture Fundamentals
+    * Autoscaling
+    * Serverless
+    * Community & Governance
+    * Personas
+    * Open Standards
+
+4. Cloud Native Observability
+    * Telemetry & Observability
+    * Prometheus
+    * Cost Management
+  
+ 5. Cloud Native Application Delivery
+     * Application Delivery Fundamentals
+     * GitOps
+     * CI/CD
+ 
 ## 1. Cloud Native Architecture Fundamentals
 **Characteristics of Cloud Native Applications:**
 
@@ -357,13 +369,5 @@ Understanding these personas is crucial for several reasons:
 
 
 ----
-# Cloud Native Observability
-* Telemetry & Observability
-* Prometheus
-* Cost Management
 
-# Cloud Native Application Delivery
-* Application Devivery Fundamentals
-* GitOps
-* CI/CD
  
