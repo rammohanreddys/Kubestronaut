@@ -21,3 +21,13 @@ The Control Plane manages the global state of the cluster, processes incoming AP
 * **Kube-Controller-Manager** (State Enforcer): Runs continuous background controller loops (E.g., Node Controller, Deployment Controller). It compares the actual state of the cluster agaist the desired state and make adjustments if they don't match.
   
 * **Cloud-Controller-Manager** (Cloud Integrator): Connects your cluster to a cloud provider's API (AWS, GCP, AZURE) to manage resources like load balancers and storage volumes.
+
+#### 2. Worker Nodes:
+
+Worker nodes are physical or virtual compute instances that host and runs containerized applications.
+
+* **Kubelet** (Node Agent): An agent running on every worker node. It receives commands from the Kube-Apiserver and ensures that the containers described in the PodSpec are running and healthy.
+
+* **Kube-Proxy** (Network Agent): Manages internal network rules on each node, routing traffic to the correct pods across the cluster using OS packet filtering (iptables /IPVS).
+
+* **Container Runtime** (Execution Engine): The software responsible for pulling images and running container instances (E.g., ContainerD, docker, CRI-O).
