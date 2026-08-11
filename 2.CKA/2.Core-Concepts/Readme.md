@@ -1,5 +1,7 @@
 ## K8S Core Concepts:
 
+#### 0. Architecture
+
 #### 1. Compute & Workloads:
 
 Container,sidecar-Container,Init-Container,Pod,pod-life-cycle,Node,Deployment,StatefulSet: 
