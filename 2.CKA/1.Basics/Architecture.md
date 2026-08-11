@@ -4,4 +4,5 @@ Kubernetes is a container orchestration platform that automates deployment, scal
 A Kubernetes cluster consists of Control Plane (Master Components) and Worker Nodes (Node Components).
 
 <p align="center">
-<img src="images/k8s-01.png" alt="Kubernetes
+<img src="Images/Architecture.png" alt="Kubernetes-Architecture"
+</p>
