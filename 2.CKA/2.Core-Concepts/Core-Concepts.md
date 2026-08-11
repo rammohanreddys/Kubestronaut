@@ -7,7 +7,7 @@ Container,sidecar-Container,Init-Container,Pod,pod-life-cycle,Node,Deployment,St
 Network Interface (CNI), Services: (ClusterIP, NodePort, Load-Balancer, Ingress), Cluster DNS, Istio,Gateway,VirtualService,Ingress,NetworkPolicy
 
 4. Storage
-configMap,PersistentVolume (PV),PersistentVolumeClaim (PVC),StorageClass,Volumes.
+configMap, PersistentVolume (PV),PersistentVolumeClaim (PVC),StorageClass,Volumes. Dynamic Volumes Provisioning, CSI drivers
 
 5. Data & Security:
 RBAC(Role, Role-Binding, ClusterRole, ClusterRoleBinding),ServiceAccounts: PodSecurityStandards,Secrets.
@@ -21,7 +21,7 @@ Taints & Tolerations,Node Selectors,Node Affinity,Pod affinity & Pod Anti-affini
 8. Scaling & High Availability:
 ReplicaSet,HPA,VPA,ClusterAutoScaling,PodDisurptionBudget
 
-9. Traffic-Routing:
-Ingress,Istio:
+9. Service Discovery/Traffic-Routing:
+Service, Labels, Selectors, Ingress, Istio:
 
 
