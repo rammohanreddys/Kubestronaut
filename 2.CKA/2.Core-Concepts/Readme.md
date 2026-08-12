@@ -45,4 +45,6 @@ ReplicaSet,HPA,VPA,ClusterAutoScaling,PodDisurptionBudget
 
 Service, Labels, Selectors, Ingress, Istio:
 
+### Additional Concepts:
+CRD's, Operators, Yaml templates
 
